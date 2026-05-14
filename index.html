@@ -53,21 +53,27 @@ body{font-family:var(--font-sans);background:#fafafa;-webkit-font-smoothing:anti
 .menu-sub{font-size:16px;color:var(--color-text-secondary);margin-top:4px}
 .order-count-badge{display:inline-flex;align-items:center;gap:6px;background:#EAF5EE;color:#3B6D11;border-radius:100px;padding:4px 14px;font-size:15px;font-weight:500;margin-left:10px}
 
-.category-tabs{display:flex;gap:10px;padding:0 24px 16px;overflow-x:auto;scrollbar-width:none}
+/* 將分類標籤改為吸頂效果，滾動時會固定在畫面上方 */
+.category-tabs{display:flex;gap:10px;padding:10px 24px 16px;overflow-x:auto;scrollbar-width:none;position:sticky;top:0;z-index:10;background:var(--color-background-primary);margin-top:-4px}
 .category-tabs::-webkit-scrollbar{display:none}
 .cat-btn{padding:10px 20px;border-radius:100px;border:2px solid var(--color-border-tertiary);background:var(--color-background-primary);font-size:16px;font-weight:500;cursor:pointer;white-space:nowrap;color:var(--color-text-primary);transition:all .2s}
 .cat-btn.active{background:#E8590C;border-color:#E8590C;color:white}
 
-.menu-grid{display:flex;flex-direction:column;gap:16px;padding:0 24px 16px}
-.menu-card{background:var(--color-background-primary);border:2px solid var(--color-border-tertiary);border-radius:var(--border-radius-lg);overflow:hidden;cursor:pointer;transition:all .2s;position:relative;display:flex;padding:12px}
+/* 網格與卡片設計重構 */
+.menu-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:16px;padding:0 24px 16px}
+.section-header{grid-column:1 / -1;font-size:22px;font-weight:bold;color:var(--color-text-primary);margin-top:12px;margin-bottom:-4px;padding-bottom:8px;border-bottom:2px solid var(--color-border-tertiary);scroll-margin-top:70px}
+.menu-card{background:var(--color-background-primary);border:2px solid var(--color-border-tertiary);border-radius:var(--border-radius-lg);overflow:hidden;cursor:pointer;transition:all .2s;position:relative;display:flex;flex-direction:column;padding:0}
 .menu-card:hover{border-color:#E8590C;transform:translateY(-2px)}
-.menu-card.selected{border-color:#E8590C;border-width:3px;background:#FFF3ED;}
-.menu-card-emoji{font-size:48px;display:flex;align-items:center;justify-content:center;padding:10px;background:var(--color-background-secondary);border-radius:8px;margin-right:16px;flex-shrink:0}
-.menu-card-body{flex:1;display:flex;flex-direction:column;justify-content:center}
-.menu-card-name{font-size:20px;font-weight:500;color:var(--color-text-primary);line-height:1.3}
-.menu-card-price{font-size:22px;font-weight:500;color:#E8590C;margin-top:8px}
-.menu-card-check{position:absolute;top:10px;right:10px;width:32px;height:32px;border-radius:50%;background:#E8590C;color:white;display:none;align-items:center;justify-content:center;font-size:18px}
+.menu-card.selected{border-color:#E8590C;border-width:3px;}
+.menu-card-emoji{font-size:64px;display:flex;align-items:center;justify-content:center;height:140px;background:var(--color-background-secondary);width:100%;border-bottom:1px solid var(--color-border-tertiary)}
+.menu-card.selected .menu-card-emoji{background:#FFF3ED;}
+.menu-card-body{padding:12px;display:flex;flex-direction:column;flex:1}
+.menu-card-name{font-size:17px;font-weight:600;color:var(--color-text-primary);line-height:1.3}
+.menu-card-desc{font-size:13px;color:var(--color-text-secondary);margin-top:6px;line-height:1.4;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.menu-card-price{font-size:20px;font-weight:600;color:#E8590C;margin-top:auto;padding-top:10px;display:flex;align-items:center;justify-content:space-between}
+.menu-card-check{position:absolute;top:10px;right:10px;width:32px;height:32px;border-radius:50%;background:#E8590C;color:white;display:none;align-items:center;justify-content:center;font-size:18px;box-shadow:0 2px 4px rgba(0,0,0,0.1)}
 .menu-card.selected .menu-card-check{display:flex}
+.cart-badge-sm{font-size:12px;color:#2D7D46;background:#EAF5EE;padding:2px 6px;border-radius:4px;}
 
 .btn-row{display:flex;gap:12px;padding:12px 24px 20px}
 .big-btn{flex:1;padding:28px 12px;border-radius:var(--border-radius-lg);border:none;color:white;font-size:20px;font-weight:500;cursor:pointer;transition:all .2s;display:flex;align-items:center;justify-content:center;gap:8px;min-height:80px}
@@ -168,12 +174,12 @@ body{font-family:var(--font-sans);background:#fafafa;-webkit-font-smoothing:anti
 <div class="step active" id="step-1">
   <div class="menu-header">
     <div class="menu-title">今天想吃什麼？<span id="cart-badge" style="display:none" class="order-count-badge"><i class="ti ti-check" aria-hidden="true"></i> <span id="cart-count">0</span> 道已選</span></div>
-    <div class="menu-sub">請選擇餐點</div>
+    <div class="menu-sub">請向下捲動或點擊按鈕快速尋找分類</div>
   </div>
   <div class="category-tabs">
-    <button class="cat-btn active" onclick="filterMenu('all',this)">全部</button>
-    <button class="cat-btn" onclick="filterMenu('popular',this)">人氣精選</button>
-    <button class="cat-btn" onclick="filterMenu('brunch',this)">貳樓早午餐</button>
+    <button class="cat-btn active" onclick="scrollToSection('all',this)">全部</button>
+    <button class="cat-btn" onclick="scrollToSection('popular',this)">人氣精選</button>
+    <button class="cat-btn" onclick="scrollToSection('brunch',this)">貳樓早午餐</button>
   </div>
   <div class="menu-grid" id="menu-grid"></div>
   <div class="btn-row">
@@ -255,8 +261,8 @@ const menuItems=[
   {id:3,name:'香爆椒麻唐揚雞麵',price:344,emoji:'🌶️',category:'popular',desc:'茄汁、雞塊、朝天乾辣椒、九層塔、起司絲'},
   {id:4,name:'台式熱炒鹹蛋苦瓜麵',price:328,emoji:'🍳',category:'popular',desc:'鹹香白醬、炸杏鮑菇、培根、山苦瓜、洋蔥、紅椒片'},
   {id:5,name:'起司local香腸奶白麵',price:344,emoji:'🧀',category:'popular',desc:'奶油白醬、帕達諾起司、黃起司、白起司、香腸、紅椒片、九層塔'},
-  {id:6,name:'橙香法式丹麥舒肥牛排',price:480,emoji:'🥩',category:'brunch',desc:'橙香丹麥、焦糖漿、舒肥牛、半熟太陽蛋(微辣)、綜合生菜、胡麻醬(含堅果過敏)、薯條、炸蒜碎'},
-  {id:7,name:'台胃口水雞班尼蛋',price:320,emoji:'🥚',category:'brunch',desc:'(含堅果過敏、孕婦不宜) 歐式麵包、口水雞絲、奶油炒菇、水波蛋、起司醬、綜合生菜、巴薩米克醋膏、薯條'},
+  {id:6,name:'橙香法式丹麥舒肥牛排',price:480,emoji:'🥩',category:'brunch',desc:'橙香丹麥、焦糖漿、舒肥牛、半熟太陽蛋(微辣)、綜合生菜、胡麻醬、薯條、炸蒜碎'},
+  {id:7,name:'台胃口水雞班尼蛋',price:320,emoji:'🥚',category:'brunch',desc:'歐式麵包、口水雞絲、奶油炒菇、水波蛋、起司醬、綜合生菜、巴薩米克醋膏、薯條'},
   {id:8,name:'燻鮭魚奶油炒菇班尼蛋',price:384,emoji:'🐟',category:'brunch',desc:'歐式麵包、燻鮭魚、酸豆、奶油炒菇、水波蛋、起司醬、綜合生菜、巴薩米克醋膏、薯條'},
   {id:9,name:'蕈菇奶起司歐姆蕾',price:304,emoji:'🍄',category:'brunch',desc:'橙香丹麥、奶油炒菇歐姆蕾、雙色起司、綜合生菜、巴薩米可醋醬、辣海地醃菜'}
 ];
@@ -283,7 +289,7 @@ const drink2Opts=[
   {id:'d2_12',label:'冰經典拿鐵',price:64},
   {id:'d2_13',label:'熱經典拿鐵',price:64},
   {id:'d2_14',label:'西西里咖啡',price:80},
-  {id:'d2_15',label:'奶油啤酒花拿鐵(無酒精)',price:88},
+  {id:'d2_15',label:'奶油啤酒花拿鐵',price:88},
   {id:'d2_16',label:'天堂鳥冰茶',price:64},
   {id:'d2_17',label:'桃花朵朵開運茶',price:72},
   {id:'d2_18',label:'熱木槿野莓果茶',price:72},
@@ -316,7 +322,6 @@ let currentItem=null;
 let selectedDrink1=null;
 let selectedDrink2=null;
 let selectedExtras=[];
-let currentCat='all';
 let editingIndex=-1;
 let bellTimer=null;
 let isAddingMore=false;
@@ -332,29 +337,55 @@ function ringBell(){
   bellTimer=setTimeout(()=>{tip.classList.remove('show');btn.classList.remove('ring');},2500);
 }
 
-function renderMenu(cat){
+function renderMenu(){
   const grid=document.getElementById('menu-grid');
-  const items=cat==='all'?menuItems:menuItems.filter(i=>i.category==='both'||i.category===cat);
-  grid.innerHTML=items.map(item=>{
-    const inCart=cart.some(c=>c.itemId===item.id);
-    const isCurrent=currentItem&&currentItem.id===item.id;
-    return`<div class="menu-card ${isCurrent?'selected':''}" onclick="selectItem(${item.id})">
-      <div class="menu-card-emoji">${item.emoji}</div>
-      <div class="menu-card-body">
-        <div class="menu-card-name">${item.name}${inCart?'<span style="font-size:13px;color:#2D7D46;margin-left:6px;background:#EAF5EE;padding:2px 6px;border-radius:4px;">✓ 已加入</span>':''}</div>
-        <div style="font-size:14px;color:var(--color-text-secondary);margin-top:6px;line-height:1.4">${item.desc}</div>
-        <div class="menu-card-price">NT$ ${item.price}</div>
-      </div>
-      <div class="menu-card-check"><i class="ti ti-check" aria-hidden="true"></i></div>
-    </div>`;
-  }).join('');
+  let html='';
+  
+  const popularItems = menuItems.filter(i=>i.category==='popular'||i.category==='both');
+  const brunchItems = menuItems.filter(i=>i.category==='brunch'||i.category==='both');
+
+  const createCards = (items) => {
+    return items.map(item=>{
+      const inCart=cart.some(c=>c.itemId===item.id);
+      const isCurrent=currentItem&&currentItem.id===item.id;
+      return `<div class="menu-card ${isCurrent?'selected':''}" data-id="${item.id}" onclick="selectItem(${item.id})">
+        <div class="menu-card-emoji">${item.emoji}</div>
+        <div class="menu-card-body">
+          <div class="menu-card-name">${item.name}</div>
+          <div class="menu-card-desc" title="${item.desc}">${item.desc}</div>
+          <div class="menu-card-price">
+            <span>NT$ ${item.price}</span>
+            ${inCart?'<span class="cart-badge-sm">✓ 已加入</span>':''}
+          </div>
+        </div>
+        <div class="menu-card-check"><i class="ti ti-check" aria-hidden="true"></i></div>
+      </div>`;
+    }).join('');
+  };
+
+  html += `<div id="sec-popular" class="section-header">Popular Items 人氣精選</div>`;
+  html += createCards(popularItems);
+
+  html += `<div id="sec-brunch" class="section-header">貳樓早午餐 SF Brunch</div>`;
+  html += createCards(brunchItems);
+
+  grid.innerHTML=html;
 }
 
-function filterMenu(cat,el){
-  currentCat=cat;
+function scrollToSection(secId, el){
+  // 變更標籤的顯示樣式
   document.querySelectorAll('.cat-btn').forEach(b=>b.classList.remove('active'));
   el.classList.add('active');
-  renderMenu(cat);
+
+  // 滑動定位
+  if(secId === 'all') {
+    window.scrollTo({top: 0, behavior: 'smooth'});
+  } else {
+    const target = document.getElementById('sec-' + secId);
+    if(target) {
+      target.scrollIntoView({behavior: 'smooth', block: 'start'});
+    }
+  }
 }
 
 function selectItem(id){
@@ -363,14 +394,17 @@ function selectItem(id){
   selectedDrink2=null;
   selectedExtras=[];
   document.getElementById('next1-btn').disabled=false;
-  renderMenu(currentCat);
+  
+  // 僅更新 DOM 樣式，避免畫面重新整理導致滑動位置跑掉
+  document.querySelectorAll('.menu-card').forEach(card => card.classList.remove('selected'));
+  document.querySelectorAll(`.menu-card[data-id="${id}"]`).forEach(card => card.classList.add('selected'));
 }
 
 function prepareAddMore(){
   isAddingMore=true;
   currentItem=null;selectedDrink1=null;selectedDrink2=null;selectedExtras=[];editingIndex=-1;
   document.getElementById('next1-btn').disabled=true;
-  renderMenu(currentCat);
+  renderMenu(); // 重新渲染以更新「已加入」標籤
   updateCartBadge();
 }
 
@@ -575,13 +609,13 @@ function restart(){
   cart=[];currentItem=null;selectedDrink1=null;selectedDrink2=null;selectedExtras=[];editingIndex=-1;isAddingMore=false;
   document.getElementById('next1-btn').disabled=true;
   document.getElementById('cart-badge').style.display='none';
-  currentCat='all';
   goStep(1);
-  renderMenu('all');
+  renderMenu();
   document.querySelectorAll('.cat-btn').forEach((b,i)=>b.classList.toggle('active',i===0));
 }
 
-renderMenu('all');
+// 初始化渲染菜單
+renderMenu();
 </script>
 
 </body>
