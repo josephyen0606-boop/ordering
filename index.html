@@ -102,30 +102,19 @@ body{font-family:var(--font-sans);background:#fafafa;-webkit-font-smoothing:anti
 .option-check{width:32px;height:32px;border-radius:50%;border:2px solid var(--color-border-tertiary);background:var(--color-background-secondary);display:flex;align-items:center;justify-content:center;transition:all .2s;flex-shrink:0}
 .option-row.selected .option-check{background:#E8590C;border-color:#E8590C;color:white}
 
-.spicy-row{padding:0 24px;margin-bottom:4px}
-.spicy-outer{border:2px solid var(--color-border-tertiary);border-radius:var(--border-radius-lg);overflow:hidden;transition:border-color .2s}
-.spicy-outer.active{border-color:#E24B4A}
-.spicy-header{display:flex;align-items:center;justify-content:space-between;padding:16px 18px;cursor:pointer;background:var(--color-background-primary);transition:background .2s}
-.spicy-header.active{background:#FCEBEB}
-.spicy-header-left{display:flex;align-items:center;gap:12px}
-.spicy-header-right{display:flex;align-items:center;gap:10px}
-.spicy-badge{padding:4px 14px;border-radius:100px;font-size:16px;font-weight:500}
-.spicy-badge.none{background:var(--color-background-secondary);color:var(--color-text-secondary)}
-.spicy-badge.has{background:#FCEBEB;color:#A32D2D}
-.spicy-levels{display:none;border-top:2px solid #F7C1C1;background:#FCEBEB}
-.spicy-levels.show{display:flex}
-.spicy-level-btn{flex:1;padding:16px 8px;border:none;background:transparent;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:6px;transition:background .2s;border-right:1px solid #F7C1C1}
-.spicy-level-btn:last-child{border-right:none}
-.spicy-level-btn:hover{background:#F7C1C1}
-.spicy-level-btn.sel{background:#E24B4A}
-.spicy-level-btn.sel .sl-label{color:white}
-.sl-emoji{font-size:28px}
-.sl-label{font-size:18px;font-weight:500;color:#A32D2D}
-
 .addon-row:hover{border-color:#2D7D46}
 .addon-row.selected{background:#EAF5EE;border-color:#2D7D46}
 .addon-row.selected .option-check{background:#2D7D46;border-color:#2D7D46;color:white}
 .addon-plus{font-size:18px;color:#E8590C;font-weight:500;margin-right:12px}
+
+.spicy-levels { display:flex; border:2px solid var(--color-border-tertiary); border-radius:var(--border-radius-lg); overflow:hidden; background:var(--color-background-primary); }
+.spicy-level-btn { flex:1; padding:16px 8px; border:none; background:transparent; cursor:pointer; display:flex; flex-direction:column; align-items:center; gap:6px; border-right:1px solid var(--color-border-tertiary); transition:background .2s; }
+.spicy-level-btn:last-child { border-right:none; }
+.spicy-level-btn:hover { background:#FCEBEB; }
+.spicy-level-btn.sel { background:#E24B4A; }
+.spicy-level-btn.sel .sl-label { color:white; }
+.sl-emoji { font-size:28px; }
+.sl-label { font-size:18px; font-weight:500; color:#A32D2D; transition:color .2s; }
 
 .confirm-header{padding:20px 24px 16px}
 .confirm-card{margin:0 24px 12px;background:var(--color-background-primary);border:2px solid var(--color-border-tertiary);border-radius:var(--border-radius-lg);overflow:hidden}
@@ -174,7 +163,7 @@ body{font-family:var(--font-sans);background:#fafafa;-webkit-font-smoothing:anti
   <div class="steps-row">
     <div class="step-dot current" id="dot-1"><div class="step-dot-circle">1</div><div class="step-dot-label">選餐</div></div>
     <div class="step-line" id="line-1"></div>
-    <div class="step-dot" id="dot-2"><div class="step-dot-circle">2</div><div class="step-dot-label">選飲料</div></div>
+    <div class="step-dot" id="dot-2"><div class="step-dot-circle">2</div><div class="step-dot-label">選附餐</div></div>
     <div class="step-line" id="line-2"></div>
     <div class="step-dot" id="dot-3"><div class="step-dot-circle">3</div><div class="step-dot-label">確認</div></div>
     <div class="step-line" id="line-3"></div>
@@ -199,6 +188,7 @@ body{font-family:var(--font-sans);background:#fafafa;-webkit-font-smoothing:anti
     <button class="cat-btn active" onclick="scrollToSection('all',this)">全部</button>
     <button class="cat-btn" onclick="scrollToSection('popular',this)">人氣精選</button>
     <button class="cat-btn" onclick="scrollToSection('brunch',this)">貳樓早午餐</button>
+    <button class="cat-btn" onclick="scrollToSection('main',this)">主餐/飯麵</button>
   </div>
   <div class="menu-grid" id="menu-grid"></div>
   <div class="btn-row">
@@ -211,51 +201,12 @@ body{font-family:var(--font-sans);background:#fafafa;-webkit-font-smoothing:anti
 <div class="step" id="step-2">
   <div class="customize-header">
     <div class="menu-title">餐點客製與加購</div>
-    <div class="menu-sub">請依您的喜好調整，並選擇飲品</div>
-  </div>
-  <div class="customize-selected-card" id="selected-card-preview"></div>
-  
-  <div class="section-title">🚫 不加配料 <span class="opt-badge" style="background:var(--color-background-secondary);color:var(--color-text-secondary);border:1px solid var(--color-border-tertiary)">可多選</span></div>
-  <div class="options-list" id="remove-options"></div>
-  
-  <div style="height:20px"></div>
-  
-  <div class="section-title">🌶️ 加辣選擇 <span class="opt-badge" style="background:var(--color-background-secondary);color:var(--color-text-secondary);border:1px solid var(--color-border-tertiary)">單選</span></div>
-  <div class="spicy-row">
-    <div class="spicy-outer" id="spicy-outer">
-      <div class="spicy-header" id="spicy-header" onclick="toggleSpicy()">
-        <div class="spicy-header-left">
-          <span style="font-size:28px">🌶️</span>
-          <div><div class="option-name">加辣</div><div class="option-sub" style="color:var(--color-text-secondary);margin-top:2px;font-weight:normal">點選展開選擇辣度</div></div>
-        </div>
-        <div class="spicy-header-right">
-          <span class="spicy-badge none" id="spicy-badge">未選擇</span>
-          <i class="ti ti-chevron-down" aria-hidden="true" id="spicy-chevron" style="font-size:20px;color:var(--color-text-secondary);transition:transform .2s"></i>
-        </div>
-      </div>
-      <div class="spicy-levels" id="spicy-levels">
-        <button class="spicy-level-btn" onclick="setSpicy(0)"><span class="sl-emoji">😊</span><span class="sl-label">不加辣</span></button>
-        <button class="spicy-level-btn" onclick="setSpicy(1)"><span class="sl-emoji">🌶️</span><span class="sl-label">小辣</span></button>
-        <button class="spicy-level-btn" onclick="setSpicy(2)"><span class="sl-emoji">🌶️🌶️</span><span class="sl-label">中辣</span></button>
-        <button class="spicy-level-btn" onclick="setSpicy(3)"><span class="sl-emoji">🌶️🌶️🌶️</span><span class="sl-label">大辣</span></button>
-      </div>
-    </div>
+    <div class="menu-sub">請依您的喜好調整口味並選擇附餐</div>
   </div>
   
-  <div style="height:20px"></div>
-
-  <div class="section-title">搭配兩杯 - 先選第一杯 <span class="req-badge">必選 1 項</span></div>
-  <div class="options-list" id="drink1-options"></div>
-  
-  <div style="height:20px"></div>
-  
-  <div class="section-title">搭配兩杯 - 再選第貳杯 <span class="req-badge">必選 1 項</span></div>
-  <div class="options-list" id="drink2-options"></div>
-  
-  <div style="height:20px"></div>
-  
-  <div class="section-title">自選優惠加點 <span class="opt-badge">可加選</span></div>
-  <div class="options-list" id="extra-options" style="margin-bottom:16px;"></div>
+  <div id="customize-body">
+    <!-- 客製化內容會由 JavaScript 自動產生 -->
+  </div>
   
   <div class="btn-row">
     <button class="back-btn" onclick="backFromCustomize()">
@@ -270,7 +221,7 @@ body{font-family:var(--font-sans);background:#fafafa;-webkit-font-smoothing:anti
 <div class="step" id="step-3">
   <div class="confirm-header">
     <div class="menu-title">確認您的訂單</div>
-    <div class="menu-sub">請確認餐點與飲料，可修改或刪除</div>
+    <div class="menu-sub">請確認餐點與附餐，可修改或刪除</div>
   </div>
   <div id="confirm-detail"></div>
   <div class="note-box">
@@ -304,81 +255,88 @@ body{font-family:var(--font-sans);background:#fafafa;-webkit-font-smoothing:anti
 
 <script>
 const menuItems=[
-  {id:1,name:'橙香法式丹麥Sunny舒肥雞',price:384,emoji:'🍗',category:'both',desc:'橙香丹麥、焦糖漿、舒肥雞、半熟太陽雙蛋(微辣)、生菜、藜麥小米、薯條'},
-  {id:2,name:'曙光汁鮮蝦雞肉麵',price:344,emoji:'🍝',category:'popular',desc:'曙光奶油醬、雞肉、蝦子、炙燒蕃茄或炙燒紅椒、季節時蔬、起司絲'},
-  {id:3,name:'香爆椒麻唐揚雞麵',price:344,emoji:'🌶️',category:'popular',desc:'茄汁、雞塊、朝天乾辣椒、九層塔、起司絲'},
-  {id:4,name:'台式熱炒鹹蛋苦瓜麵',price:328,emoji:'🍳',category:'popular',desc:'鹹香白醬、炸杏鮑菇、培根、山苦瓜、洋蔥、紅椒片'},
-  {id:5,name:'起司local香腸奶白麵',price:344,emoji:'🧀',category:'popular',desc:'奶油白醬、帕達諾起司、黃起司、白起司、香腸、紅椒片、九層塔'},
-  {id:6,name:'橙香法式丹麥舒肥牛排',price:480,emoji:'🥩',category:'brunch',desc:'橙香丹麥、焦糖漿、舒肥牛、半熟太陽蛋(微辣)、綜合生菜、胡麻醬、薯條、炸蒜碎'},
-  {id:7,name:'台胃口水雞班尼蛋',price:320,emoji:'🥚',category:'brunch',desc:'歐式麵包、口水雞絲、奶油炒菇、水波蛋、起司醬、綜合生菜、巴薩米克醋膏、薯條'},
-  {id:8,name:'燻鮭魚奶油炒菇班尼蛋',price:384,emoji:'🐟',category:'brunch',desc:'歐式麵包、燻鮭魚、酸豆、奶油炒菇、水波蛋、起司醬、綜合生菜、巴薩米克醋膏、薯條'},
-  {id:9,name:'蕈菇奶起司歐姆蕾',price:304,emoji:'🍄',category:'brunch',desc:'橙香丹麥、奶油炒菇歐姆蕾、雙色起司、綜合生菜、巴薩米可醋醬、辣海地醃菜'}
+  {id:1, name:'橙香法式丹麥Sunny舒肥雞', price:384, emoji:'🍗', categories:['popular', 'brunch'], flow:'brunch', desc:'橙香丹麥、焦糖漿、舒肥雞、半熟太陽雙蛋(微辣)、生菜、藜麥小米、薯條'},
+  {id:2, name:'曙光汁鮮蝦雞肉麵', price:344, emoji:'🍝', categories:['popular', 'main'], flow:'main', desc:'曙光奶油醬、雞肉、蝦子、炙燒蕃茄或炙燒紅椒、季節時蔬、起司絲'},
+  {id:3, name:'香爆椒麻唐揚雞麵', price:344, emoji:'🌶️', categories:['popular', 'main'], flow:'main', desc:'茄汁、雞塊、朝天乾辣椒、九層塔、起司絲'},
+  {id:4, name:'台式熱炒鹹蛋苦瓜麵', price:328, emoji:'🍳', categories:['popular', 'main'], flow:'main', desc:'鹹香白醬、炸杏鮑菇、培根、山苦瓜、洋蔥、紅椒片'},
+  {id:5, name:'起司local香腸奶白麵', price:344, emoji:'🧀', categories:['popular', 'main'], flow:'main', desc:'奶油白醬、帕達諾起司、黃起司、白起司、香腸、紅椒片、九層塔'},
+  {id:6, name:'橙香法式丹麥舒肥牛排', price:480, emoji:'🥩', categories:['brunch'], flow:'brunch', desc:'橙香丹麥、焦糖漿、舒肥牛、半熟太陽蛋(微辣)、綜合生菜、胡麻醬、薯條、炸蒜碎'},
+  {id:7, name:'台胃口水雞班尼蛋', price:320, emoji:'🥚', categories:['brunch'], flow:'brunch', desc:'歐式麵包、口水雞絲、奶油炒菇、水波蛋、起司醬、綜合生菜、巴薩米克醋膏、薯條'},
+  {id:8, name:'燻鮭魚奶油炒菇班尼蛋', price:384, emoji:'🐟', categories:['brunch'], flow:'brunch', desc:'歐式麵包、燻鮭魚、酸豆、奶油炒菇、水波蛋、起司醬、綜合生菜、巴薩米克醋膏、薯條'},
+  {id:9, name:'蕈菇奶起司歐姆蕾', price:304, emoji:'🍄', categories:['brunch'], flow:'brunch', desc:'橙香丹麥、奶油炒菇歐姆蕾、雙色起司、綜合生菜、巴薩米可醋醬、辣海地醃菜'},
+  {id:10, name:'巴薩米克蕈菇麵', price:328, emoji:'🍝', categories:['main'], flow:'main', desc:'特製雙醋、半熟太陽蛋、綜合菇、生菜、藜麥小米'},
+  {id:11, name:'經典青醬鮮蝦麵', price:344, emoji:'🦐', categories:['main'], flow:'main', desc:'(含堅果過敏) 奶油青醬、蝦子、季節時蔬、炸蒜片、起司絲'},
+  {id:12, name:'酒香蒜味蛤蜊墨魚麵', price:344, emoji:'🦑', categories:['main'], flow:'main', desc:'(孕婦不宜)酒、蛤蠣、蒜頭、九層塔、炸蒜片'},
+  {id:13, name:'松露蕈菇奶油麵', price:344, emoji:'🍄', categories:['main'], flow:'main', desc:'松露奶油白醬、綜合菇、巧克力、起司絲'},
+  {id:14, name:'月見苦瓜奶油飯', price:336, emoji:'🍛', categories:['main'], flow:'main', desc:'(孕婦不宜)鹹香白醬、山苦瓜、炸杏鮑菇、洋蔥、紅蔥頭、半熟太陽蛋、起司絲、紅椒片、薑黃飯'},
+  {id:15, name:'西班牙辣炒海陸飯', price:352, emoji:'🥘', categories:['main'], flow:'main', desc:'(孕婦不宜)魷魚、蝦子、蛤蜊、香腸、起司絲、薑黃飯'},
+  {id:16, name:'焗厚切豬排奶油飯', price:368, emoji:'🍛', categories:['main'], flow:'main', desc:'(孕婦不宜)曙光奶油醬、藍帶豬排、培根、季節時蔬、起司絲、薑黃飯'}
 ];
 
 const removeOpts=[
-  {id:'r1',label:'不加蔥',emoji:'🌿',sub:'去除所有蔥花'},
-  {id:'r2',label:'不加蒜',emoji:'🧄',sub:'去除蒜末'},
-  {id:'r3',label:'少油',emoji:'🫧',sub:'減少烹調用油'},
-  {id:'r4',label:'少鹽',emoji:'🧂',sub:'減少調味鹽份'},
+  {id:'r1', label:'不加蔥', emoji:'🌿', sub:'去除所有蔥花'},
+  {id:'r2', label:'不加蒜', emoji:'🧄', sub:'去除蒜末'},
+  {id:'r3', label:'少油', emoji:'🫧', sub:'減少烹調用油'},
+  {id:'r4', label:'少鹽', emoji:'🧂', sub:'減少調味鹽份'},
 ];
 
 const drink1Opts=[
-  {id:'d1_1',label:'新鮮果汁',sub:'內含蜂蜜，一歲以下幼童請避免飲用'},
-  {id:'d1_2',label:'明日葉汁',sub:''},
-  {id:'d1_3',label:'冰牛奶',sub:''},
-  {id:'d1_4',label:'熱牛奶',sub:''}
+  {id:'d1_1', label:'新鮮果汁', sub:'內含蜂蜜，一歲以下幼童請避免飲用'},
+  {id:'d1_2', label:'明日葉汁', sub:''},
+  {id:'d1_3', label:'冰牛奶', sub:''},
+  {id:'d1_4', label:'熱牛奶', sub:''}
 ];
 
 const drink2Opts=[
-  {id:'d2_1',label:'冰無糖紅茶',price:0},
-  {id:'d2_2',label:'冰紅茶',price:0},
-  {id:'d2_3',label:'熱紅茶',price:0},
-  {id:'d2_4',label:'冰奶茶',price:0},
-  {id:'d2_5',label:'熱奶茶',price:0},
-  {id:'d2_6',label:'冰美式咖啡',price:0},
-  {id:'d2_7',label:'熱美式咖啡',price:0},
-  {id:'d2_8',label:'熱檸檬果萊姆茶',price:0},
-  {id:'d2_9',label:'可樂',price:0},
-  {id:'d2_10',label:'雪碧',price:0},
-  {id:'d2_11',label:'ZERO可樂',price:0},
-  {id:'d2_12',label:'冰經典拿鐵',price:64},
-  {id:'d2_13',label:'熱經典拿鐵',price:64},
-  {id:'d2_14',label:'西西里咖啡',price:80},
-  {id:'d2_15',label:'奶油啤酒花拿鐵',price:88},
-  {id:'d2_16',label:'天堂鳥冰茶',price:64},
-  {id:'d2_17',label:'桃花朵朵開運茶',price:72},
-  {id:'d2_18',label:'熱木槿野莓果茶',price:72},
-  {id:'d2_19',label:'熱檸檬草迷迭香甜薑茶',price:72},
-  {id:'d2_20',label:'粉紅芭樂蘋果汁',price:104}
+  {id:'d2_1', label:'冰無糖紅茶', price:0}, {id:'d2_2', label:'冰紅茶', price:0},
+  {id:'d2_3', label:'熱紅茶', price:0}, {id:'d2_4', label:'冰奶茶', price:0},
+  {id:'d2_5', label:'熱奶茶', price:0}, {id:'d2_6', label:'冰美式咖啡', price:0},
+  {id:'d2_7', label:'熱美式咖啡', price:0}, {id:'d2_8', label:'熱檸檬果萊姆茶', price:0},
+  {id:'d2_9', label:'可樂', price:0}, {id:'d2_10', label:'雪碧', price:0},
+  {id:'d2_11', label:'ZERO可樂', price:0}, {id:'d2_12', label:'冰經典拿鐵', price:64},
+  {id:'d2_13', label:'熱經典拿鐵', price:64}, {id:'d2_14', label:'西西里咖啡', price:80},
+  {id:'d2_15', label:'奶油啤酒花拿鐵', price:88}, {id:'d2_16', label:'天堂鳥冰茶', price:64},
+  {id:'d2_17', label:'桃花朵朵開運茶', price:72}, {id:'d2_18', label:'熱木槿野莓果茶', price:72},
+  {id:'d2_19', label:'熱檸檬草迷迭香甜薑茶', price:72}, {id:'d2_20', label:'粉紅芭樂蘋果汁', price:104}
+];
+
+const soupOpts=[
+  {id:'s1', label:'火腿玉米濃湯', price:0},
+  {id:'s2', label:'蕃茄蔬菜湯(蛋奶素)', price:0}
+];
+
+const upgradeOpts=[
+  {id:'u1', label:'加大', price:56}
 ];
 
 const extraOpts=[
-  {id:'e1',label:'歐式麵包盤',sub:'麵包球含蜂蜜成份',price:96},
-  {id:'e2',label:'火腿玉米濃湯',sub:'',price:72},
-  {id:'e3',label:'蕃茄蔬菜湯(蛋奶素)',sub:'',price:72},
-  {id:'e4',label:'94香炸菇盤',sub:'孕婦不宜',price:72},
-  {id:'e5',label:'安妞洋釀辣炸雞',sub:'',price:72},
-  {id:'e6',label:'辣奶油火烤玉米',sub:'孕婦不宜',price:72},
-  {id:'e7',label:'冰無糖紅茶',sub:'',price:72},
-  {id:'e8',label:'冰紅茶',sub:'',price:72},
-  {id:'e9',label:'熱紅茶',sub:'',price:72},
-  {id:'e10',label:'冰奶茶',sub:'',price:72},
-  {id:'e11',label:'熱奶茶',sub:'',price:72},
-  {id:'e12',label:'冰美式咖啡',sub:'',price:72},
-  {id:'e13',label:'熱美式咖啡',sub:'',price:72},
-  {id:'e14',label:'熱檸檬果萊姆茶',sub:'',price:72},
-  {id:'e15',label:'可樂',sub:'',price:72},
-  {id:'e16',label:'雪碧',sub:'',price:72},
-  {id:'e17',label:'ZERO可樂',sub:'',price:72}
+  {id:'e1', label:'歐式麵包盤', sub:'麵包球含蜂蜜成份', price:96},
+  {id:'e2', label:'火腿玉米濃湯', sub:'', price:72},
+  {id:'e3', label:'蕃茄蔬菜湯(蛋奶素)', sub:'', price:72},
+  {id:'e4', label:'94香炸菇盤', sub:'孕婦不宜', price:72},
+  {id:'e5', label:'安妞洋釀辣炸雞', sub:'', price:72},
+  {id:'e6', label:'辣奶油火烤玉米', sub:'孕婦不宜', price:72},
+  {id:'e7', label:'冰無糖紅茶', sub:'', price:72},
+  {id:'e8', label:'冰紅茶', sub:'', price:72},
+  {id:'e9', label:'熱紅茶', sub:'', price:72},
+  {id:'e10', label:'冰奶茶', sub:'', price:72},
+  {id:'e11', label:'熱奶茶', sub:'', price:72},
+  {id:'e12', label:'冰美式咖啡', sub:'', price:72},
+  {id:'e13', label:'熱美式咖啡', sub:'', price:72},
+  {id:'e14', label:'熱檸檬果萊姆茶', sub:'', price:72},
+  {id:'e15', label:'可樂', sub:'', price:72},
+  {id:'e16', label:'雪碧', sub:'', price:72},
+  {id:'e17', label:'ZERO可樂', sub:'', price:72}
 ];
 
 let cart=[];
 let currentItem=null;
 let currentRemove=[];
 let spicyLevel=-1;
-let spicyOpen=false;
 let selectedDrink1=null;
 let selectedDrink2=null;
+let selectedSoup=null;
+let selectedUpgrade=null;
 let selectedExtras=[];
 let editingIndex=-1;
 let bellTimer=null;
@@ -398,9 +356,6 @@ function ringBell(){
 function renderMenu(){
   const grid=document.getElementById('menu-grid');
   let html='';
-  
-  const popularItems = menuItems.filter(i=>i.category==='popular'||i.category==='both');
-  const brunchItems = menuItems.filter(i=>i.category==='brunch'||i.category==='both');
 
   const createCards = (items) => {
     return items.map(item=>{
@@ -422,10 +377,13 @@ function renderMenu(){
   };
 
   html += `<div id="sec-popular" class="section-header">Popular Items 人氣精選</div>`;
-  html += createCards(popularItems);
+  html += createCards(menuItems.filter(i=>i.categories.includes('popular')));
 
   html += `<div id="sec-brunch" class="section-header">貳樓早午餐 SF Brunch</div>`;
-  html += createCards(brunchItems);
+  html += createCards(menuItems.filter(i=>i.categories.includes('brunch')));
+
+  html += `<div id="sec-main" class="section-header">主餐/飯麵 Main</div>`;
+  html += createCards(menuItems.filter(i=>i.categories.includes('main')));
 
   grid.innerHTML=html;
 }
@@ -448,9 +406,10 @@ function selectItem(id){
   currentItem=menuItems.find(i=>i.id===id);
   currentRemove=[];
   spicyLevel=-1;
-  spicyOpen=false;
   selectedDrink1=null;
   selectedDrink2=null;
+  selectedSoup=null;
+  selectedUpgrade=null;
   selectedExtras=[];
   document.getElementById('next1-btn').disabled=false;
   
@@ -460,7 +419,7 @@ function selectItem(id){
 
 function prepareAddMore(){
   isAddingMore=true;
-  currentItem=null;currentRemove=[];spicyLevel=-1;spicyOpen=false;selectedDrink1=null;selectedDrink2=null;selectedExtras=[];editingIndex=-1;
+  currentItem=null; currentRemove=[]; spicyLevel=-1; selectedDrink1=null; selectedDrink2=null; selectedSoup=null; selectedUpgrade=null; selectedExtras=[]; editingIndex=-1;
   document.getElementById('next1-btn').disabled=true;
   renderMenu();
   updateCartBadge();
@@ -482,7 +441,13 @@ function backFromCustomize(){
 }
 
 function checkStep2Valid() {
-  document.getElementById('next2-btn').disabled = !(selectedDrink1 && selectedDrink2);
+  const btn = document.getElementById('next2-btn');
+  if (!currentItem) return;
+  if (currentItem.flow === 'brunch') {
+    btn.disabled = !(selectedDrink1 && selectedDrink2);
+  } else if (currentItem.flow === 'main') {
+    btn.disabled = !(selectedSoup);
+  }
 }
 
 function toggleRemove(id){
@@ -491,37 +456,18 @@ function toggleRemove(id){
   renderStep2();
 }
 
-function toggleSpicy(){
-  spicyOpen=!spicyOpen;
-  document.getElementById('spicy-levels').classList.toggle('show',spicyOpen);
-  document.getElementById('spicy-chevron').style.transform=spicyOpen?'rotate(180deg)':'';
-  document.getElementById('spicy-outer').classList.toggle('active',spicyOpen||spicyLevel>=0);
-  document.getElementById('spicy-header').classList.toggle('active',spicyOpen||spicyLevel>=0);
-}
-
 function setSpicy(lvl){
   spicyLevel=lvl;
-  const labels=['不加辣','小辣','中辣','大辣'];
-  const badge=document.getElementById('spicy-badge');
-  badge.textContent=labels[lvl];
-  badge.className='spicy-badge '+(lvl===0?'none':'has');
-  document.querySelectorAll('.spicy-level-btn').forEach((b,i)=>b.classList.toggle('sel',i===lvl));
-  document.getElementById('spicy-outer').classList.add('active');
-  document.getElementById('spicy-header').classList.add('active');
-}
-
-function selectD1(id){
-  selectedDrink1=id;
   renderStep2();
-  checkStep2Valid();
 }
 
-function selectD2(id){
-  selectedDrink2=id;
+function selectD1(id){ selectedDrink1=id; renderStep2(); }
+function selectD2(id){ selectedDrink2=id; renderStep2(); }
+function selectSoup(id){ selectedSoup=id; renderStep2(); }
+function toggleUpgrade(id){
+  selectedUpgrade = (selectedUpgrade === id) ? null : id;
   renderStep2();
-  checkStep2Valid();
 }
-
 function toggleExtra(id){
   if(selectedExtras.includes(id)) selectedExtras=selectedExtras.filter(x=>x!==id);
   else selectedExtras.push(id);
@@ -529,13 +475,19 @@ function toggleExtra(id){
 }
 
 function renderStep2(){
-  document.getElementById('selected-card-preview').innerHTML=
-    `<div class="customize-emoji">${currentItem.emoji}</div>
-     <div><div class="customize-item-name">${currentItem.name}</div>
-     <div class="customize-item-price">NT$ ${currentItem.price}</div></div>`;
+  let html = `
+    <div class="customize-selected-card">
+      <div class="customize-emoji">${currentItem.emoji}</div>
+      <div>
+        <div class="customize-item-name">${currentItem.name}</div>
+        <div class="customize-item-price">NT$ ${currentItem.price}</div>
+      </div>
+    </div>
+  `;
   
-  // 不加配料
-  document.getElementById('remove-options').innerHTML=removeOpts.map(o=>`
+  // 1. 不加配料
+  html += `<div class="section-title">🚫 不加配料 <span class="opt-badge" style="background:var(--color-background-secondary);color:var(--color-text-secondary);border:1px solid var(--color-border-tertiary)">可多選</span></div>`;
+  html += `<div class="options-list">` + removeOpts.map(o=>`
     <div class="option-row ${currentRemove.includes(o.id)?'selected':''}" onclick="toggleRemove('${o.id}')">
       <div class="option-row-left">
         <span style="font-size:24px;margin-right:8px">${o.emoji}</span>
@@ -545,52 +497,67 @@ function renderStep2(){
         </div>
       </div>
       <div class="option-check">${currentRemove.includes(o.id)?'<i class="ti ti-check" aria-hidden="true"></i>':''}</div>
-    </div>`).join('');
+    </div>`).join('') + `</div><div style="height:20px"></div>`;
 
-  // 辣度狀態
-  if(spicyLevel>=0){
-    const labels=['不加辣','小辣','中辣','大辣'];
-    document.getElementById('spicy-badge').textContent=labels[spicyLevel];
-    document.getElementById('spicy-badge').className='spicy-badge '+(spicyLevel===0?'none':'has');
-    document.querySelectorAll('.spicy-level-btn').forEach((b,i)=>b.classList.toggle('sel',i===spicyLevel));
-    document.getElementById('spicy-outer').classList.add('active');
-    document.getElementById('spicy-header').classList.add('active');
-  } else {
-    document.getElementById('spicy-badge').textContent='未選擇';
-    document.getElementById('spicy-badge').className='spicy-badge none';
-    document.querySelectorAll('.spicy-level-btn').forEach(b=>b.classList.remove('sel'));
-    document.getElementById('spicy-outer').classList.remove('active');
-    document.getElementById('spicy-header').classList.remove('active');
+  // 2. 直覺點擊選辣度
+  html += `<div class="section-title">🌶️ 辣度選擇 <span class="req-badge" style="background:var(--color-background-secondary);color:var(--color-text-secondary);border:1px solid var(--color-border-tertiary)">單選</span></div>`;
+  const spicyLabels = ['不加辣', '小辣', '中辣', '大辣'];
+  const spicyEmojis = ['😊', '🌶️', '🌶️🌶️', '🌶️🌶️🌶️'];
+  html += `<div style="padding:0 24px"><div class="spicy-levels">`;
+  for(let i=0; i<=3; i++) {
+      const isSel = spicyLevel === i;
+      html += `<button class="spicy-level-btn ${isSel?'sel':''}" onclick="setSpicy(${i})">
+          <span class="sl-emoji">${spicyEmojis[i]}</span>
+          <span class="sl-label">${spicyLabels[i]}</span>
+      </button>`;
   }
-  document.getElementById('spicy-levels').classList.toggle('show',spicyOpen);
-  document.getElementById('spicy-chevron').style.transform=spicyOpen?'rotate(180deg)':'';
+  html += `</div></div><div style="height:20px"></div>`;
 
-  // 第一杯
-  document.getElementById('drink1-options').innerHTML=drink1Opts.map(o=>`
-    <div class="option-row ${selectedDrink1===o.id?'selected':''}" onclick="selectD1('${o.id}')">
-      <div class="option-row-left">
-        <div>
-          <div class="option-name">${o.label}</div>
-          ${o.sub ? `<div class="option-sub">${o.sub}</div>` : ''}
+  // 3. 依據類別(flow)顯示不同附餐
+  if(currentItem.flow === 'brunch') {
+    // 早午餐流程：飲料一、飲料二
+    html += `<div class="section-title">搭配兩杯 - 先選第一杯 <span class="req-badge">必選 1 項</span></div>`;
+    html += `<div class="options-list">` + drink1Opts.map(o=>`
+      <div class="option-row ${selectedDrink1===o.id?'selected':''}" onclick="selectD1('${o.id}')">
+        <div class="option-row-left">
+          <div><div class="option-name">${o.label}</div>${o.sub ? `<div class="option-sub">${o.sub}</div>` : ''}</div>
         </div>
-      </div>
-      <div class="option-check">${selectedDrink1===o.id?'<i class="ti ti-check" aria-hidden="true"></i>':''}</div>
-    </div>`).join('');
-  
-  // 第二杯
-  document.getElementById('drink2-options').innerHTML=drink2Opts.map(o=>`
-    <div class="option-row ${selectedDrink2===o.id?'selected':''}" onclick="selectD2('${o.id}')">
-      <div class="option-row-left">
-        <div class="option-name">${o.label}</div>
-      </div>
-      <div style="display:flex;align-items:center;">
-        ${o.price > 0 ? `<span class="addon-plus">+NT$ ${o.price}</span>` : ''}
-        <div class="option-check">${selectedDrink2===o.id?'<i class="ti ti-check" aria-hidden="true"></i>':''}</div>
-      </div>
-    </div>`).join('');
+        <div class="option-check">${selectedDrink1===o.id?'<i class="ti ti-check" aria-hidden="true"></i>':''}</div>
+      </div>`).join('') + `</div><div style="height:20px"></div>`;
+    
+    html += `<div class="section-title">搭配兩杯 - 再選第貳杯 <span class="req-badge">必選 1 項</span></div>`;
+    html += `<div class="options-list">` + drink2Opts.map(o=>`
+      <div class="option-row ${selectedDrink2===o.id?'selected':''}" onclick="selectD2('${o.id}')">
+        <div class="option-row-left"><div class="option-name">${o.label}</div></div>
+        <div style="display:flex;align-items:center;">
+          ${o.price > 0 ? `<span class="addon-plus">+NT$ ${o.price}</span>` : ''}
+          <div class="option-check">${selectedDrink2===o.id?'<i class="ti ti-check" aria-hidden="true"></i>':''}</div>
+        </div>
+      </div>`).join('') + `</div><div style="height:20px"></div>`;
 
-  // 優惠加點
-  document.getElementById('extra-options').innerHTML=extraOpts.map(o=>`
+  } else if (currentItem.flow === 'main') {
+    // 飯麵流程：選湯、加飯
+    html += `<div class="section-title">主餐飯麵附餐湯品 <span class="req-badge">必選 1 項</span></div>`;
+    html += `<div class="options-list">` + soupOpts.map(o=>`
+      <div class="option-row ${selectedSoup===o.id?'selected':''}" onclick="selectSoup('${o.id}')">
+        <div class="option-row-left"><div class="option-name">${o.label}</div></div>
+        <div class="option-check">${selectedSoup===o.id?'<i class="ti ti-check" aria-hidden="true"></i>':''}</div>
+      </div>`).join('') + `</div><div style="height:20px"></div>`;
+
+    html += `<div class="section-title">(主餐飯麵)加飯 <span class="opt-badge" style="background:var(--color-background-secondary);color:var(--color-text-secondary);border:1px solid var(--color-border-tertiary)">可選 1 項</span></div>`;
+    html += `<div class="options-list">` + upgradeOpts.map(o=>`
+      <div class="option-row ${selectedUpgrade===o.id?'selected':''}" onclick="toggleUpgrade('${o.id}')">
+        <div class="option-row-left"><div class="option-name">${o.label}</div></div>
+        <div style="display:flex;align-items:center;">
+          <span class="addon-plus">+NT$ ${o.price}</span>
+          <div class="option-check">${selectedUpgrade===o.id?'<i class="ti ti-check" style="color:white" aria-hidden="true"></i>':''}</div>
+        </div>
+      </div>`).join('') + `</div><div style="height:20px"></div>`;
+  }
+
+  // 4. 自選優惠加點
+  html += `<div class="section-title">自選優惠加點 <span class="opt-badge">可多選</span></div>`;
+  html += `<div class="options-list" style="margin-bottom:16px;">` + extraOpts.map(o=>`
     <div class="option-row addon-row ${selectedExtras.includes(o.id)?'selected':''}" onclick="toggleExtra('${o.id}')">
       <div class="option-row-left">
         <div>
@@ -602,17 +569,30 @@ function renderStep2(){
         <span class="addon-plus" style="color:#2D7D46">+NT$ ${o.price}</span>
         <div class="option-check">${selectedExtras.includes(o.id)?'<i class="ti ti-check" style="color:white" aria-hidden="true"></i>':''}</div>
       </div>
-    </div>`).join('');
-    
+    </div>`).join('') + `</div>`;
+
+  document.getElementById('customize-body').innerHTML = html;
   checkStep2Valid();
 }
 
 function saveAndNext(){
+  const cartData = {
+    itemId: currentItem.id, 
+    item: currentItem, 
+    remove: [...currentRemove], 
+    spicy: spicyLevel, 
+    drink1: selectedDrink1, 
+    drink2: selectedDrink2, 
+    soup: selectedSoup,
+    upgrade: selectedUpgrade,
+    extras: [...selectedExtras]
+  };
+
   if(editingIndex>=0){
-    cart[editingIndex]={itemId:currentItem.id, item:currentItem, remove:[...currentRemove], spicy:spicyLevel, drink1:selectedDrink1, drink2:selectedDrink2, extras:[...selectedExtras]};
+    cart[editingIndex] = cartData;
     editingIndex=-1;
   } else {
-    cart.push({itemId:currentItem.id, item:currentItem, remove:[...currentRemove], spicy:spicyLevel, drink1:selectedDrink1, drink2:selectedDrink2, extras:[...selectedExtras]});
+    cart.push(cartData);
   }
   isAddingMore=false;
   updateCartBadge();
@@ -627,9 +607,10 @@ function editCartItem(idx){
   currentItem=entry.item;
   currentRemove=[...entry.remove];
   spicyLevel=entry.spicy;
-  spicyOpen=false;
   selectedDrink1=entry.drink1;
   selectedDrink2=entry.drink2;
+  selectedSoup=entry.soup;
+  selectedUpgrade=entry.upgrade;
   selectedExtras=[...entry.extras];
   goStep(2);
 }
@@ -654,16 +635,26 @@ function renderStep3(){
     let d2Price = 0;
     const d2Obj = drink2Opts.find(o=>o.id===entry.drink2);
     if(d2Obj) d2Price = d2Obj.price;
+
+    let uPrice = 0;
+    const uObj = upgradeOpts.find(o=>o.id===entry.upgrade);
+    if(uObj) uPrice = uObj.price;
     
     const extraTotal = extraOpts.filter(o=>entry.extras.includes(o.id)).reduce((s,o)=>s+o.price,0);
-    const itemTotal = entry.item.price + d2Price + extraTotal;
+    const itemTotal = entry.item.price + d2Price + uPrice + extraTotal;
     grandTotal += itemTotal;
     
     const removeTags = removeOpts.filter(o=>entry.remove.includes(o.id)).map(o=>`<span class="tag tag-orange">${o.emoji} ${o.label}</span>`).join('');
     const spicyTag = entry.spicy>0?`<span class="tag tag-red">🌶️ ${spicyLabels[entry.spicy]}</span>`:(entry.spicy===0?`<span class="tag tag-orange">😊 不加辣</span>`:'');
+    
     const d1Obj = drink1Opts.find(o=>o.id===entry.drink1);
     const d1Tag = d1Obj ? `<span class="tag tag-green">飲①：${d1Obj.label}</span>` : '';
     const d2Tag = d2Obj ? `<span class="tag tag-green">飲②：${d2Obj.label}${d2Obj.price>0?' (+NT$'+d2Obj.price+')':''}</span>` : '';
+    
+    const sObj = soupOpts.find(o=>o.id===entry.soup);
+    const soupTag = sObj ? `<span class="tag tag-green">湯品：${sObj.label}</span>` : '';
+    const uTag = uObj ? `<span class="tag tag-green">加飯：${uObj.label} (+NT$${uObj.price})</span>` : '';
+
     const exTags = extraOpts.filter(o=>entry.extras.includes(o.id)).map(o=>`<span class="tag tag-green">加點：${o.label} (+NT$${o.price})</span>`).join('');
     
     html+=`<div class="confirm-card">
@@ -676,6 +667,8 @@ function renderStep3(){
             ${spicyTag}
             ${d1Tag}
             ${d2Tag}
+            ${soupTag}
+            ${uTag}
             ${exTags}
           </div>
         </div>
@@ -727,7 +720,7 @@ function submitOrder(){
 }
 
 function restart(){
-  cart=[];currentItem=null;currentRemove=[];spicyLevel=-1;spicyOpen=false;selectedDrink1=null;selectedDrink2=null;selectedExtras=[];editingIndex=-1;isAddingMore=false;
+  cart=[]; currentItem=null; currentRemove=[]; spicyLevel=-1; selectedDrink1=null; selectedDrink2=null; selectedSoup=null; selectedUpgrade=null; selectedExtras=[]; editingIndex=-1; isAddingMore=false;
   document.getElementById('next1-btn').disabled=true;
   document.getElementById('cart-badge').style.display='none';
   goStep(1);
