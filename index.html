@@ -1,0 +1,565 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>長者友善點餐系統</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --or:#E8590C;--or-light:#FFF3ED;--or-mid:#F7C59F;
+  --gn:#2D7D46;--gn-light:#EAF5EE;
+  --bl:#185FA5;--bl-light:#E6F1FB;--rd:#A32D2D;--rd-light:#FCEBEB;
+  --color-text-primary:#1a1a1a;
+  --color-text-secondary:#666;
+  --color-background-primary:#fff;
+  --color-background-secondary:#f5f5f5;
+  --color-border-tertiary:#ddd;
+  --border-radius-lg:12px;
+  --border-radius-md:8px;
+  --font-sans:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+}
+body{font-family:var(--font-sans);background:#fafafa;-webkit-font-smoothing:antialiased}
+#app{max-width:680px;margin:0 auto;position:relative;background:#fff;min-height:100vh}
+.step{display:none}.step.active{display:block}
+
+.top-bar{display:flex;align-items:center;justify-content:space-between;padding:14px 20px 12px;background:var(--color-background-primary);border-bottom:0.5px solid var(--color-border-tertiary)}
+.steps-row{display:flex;align-items:center;gap:0;flex:1;justify-content:center}
+.step-dot{display:flex;flex-direction:column;align-items:center;gap:4px}
+.step-dot-circle{width:38px;height:38px;border-radius:50%;background:var(--color-background-secondary);border:2px solid var(--color-border-tertiary);display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:500;color:var(--color-text-secondary);transition:all .3s}
+.step-dot.done .step-dot-circle{background:#2D7D46;border-color:#2D7D46;color:white}
+.step-dot.current .step-dot-circle{background:#E8590C;border-color:#E8590C;color:white}
+.step-dot-label{font-size:12px;color:var(--color-text-secondary);white-space:nowrap;font-weight:500}
+.step-dot.current .step-dot-label{color:#E8590C}
+.step-dot.done .step-dot-label{color:#2D7D46}
+.step-line{width:32px;height:2px;background:var(--color-border-tertiary);margin:0 2px;margin-bottom:18px;transition:background .3s}
+.step-line.done{background:#2D7D46}
+
+.bell-wrap{position:relative;flex-shrink:0}
+.bell-btn{display:flex;align-items:center;justify-content:center;gap:6px;padding:10px 16px;border-radius:var(--border-radius-md);border:2.5px solid #A32D2D;background:#FCEBEB;cursor:pointer;transition:all .2s;position:relative}
+.bell-btn:hover{background:#F7C1C1}
+.bell-btn:active{transform:scale(0.94)}
+.bell-btn i{font-size:20px;color:#A32D2D}
+.bell-label{font-size:15px;font-weight:500;color:#A32D2D;white-space:nowrap}
+.bell-ripple{position:absolute;inset:0;border-radius:var(--border-radius-md);border:2px solid #A32D2D;opacity:0}
+.bell-btn.ring .bell-ripple{animation:ripple .6s ease-out}
+@keyframes ripple{0%{transform:scale(1);opacity:.7}100%{transform:scale(2);opacity:0}}
+.bell-tooltip{position:absolute;right:0;top:52px;background:var(--color-background-primary);border:1.5px solid #F7C1C1;border-radius:var(--border-radius-md);padding:10px 16px;font-size:15px;color:#A32D2D;white-space:nowrap;display:none;z-index:10;box-shadow:0 2px 8px rgba(0,0,0,.08)}
+.bell-tooltip.show{display:block}
+
+.menu-header{padding:20px 24px 12px}
+.menu-title{font-size:26px;font-weight:500;color:var(--color-text-primary)}
+.menu-sub{font-size:16px;color:var(--color-text-secondary);margin-top:4px}
+.order-count-badge{display:inline-flex;align-items:center;gap:6px;background:#EAF5EE;color:#3B6D11;border-radius:100px;padding:4px 14px;font-size:15px;font-weight:500;margin-left:10px}
+
+.category-tabs{display:flex;gap:10px;padding:0 24px 16px;overflow-x:auto;scrollbar-width:none}
+.category-tabs::-webkit-scrollbar{display:none}
+.cat-btn{padding:10px 20px;border-radius:100px;border:2px solid var(--color-border-tertiary);background:var(--color-background-primary);font-size:16px;font-weight:500;cursor:pointer;white-space:nowrap;color:var(--color-text-primary);transition:all .2s}
+.cat-btn.active{background:#E8590C;border-color:#E8590C;color:white}
+
+.menu-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:16px;padding:0 24px 16px}
+.menu-card{background:var(--color-background-primary);border:2px solid var(--color-border-tertiary);border-radius:var(--border-radius-lg);overflow:hidden;cursor:pointer;transition:all .2s;position:relative}
+.menu-card:hover{border-color:#E8590C;transform:translateY(-2px)}
+.menu-card.selected{border-color:#E8590C;border-width:3px}
+.menu-card-img{width:100%;height:130px;display:flex;align-items:center;justify-content:center;font-size:64px;background:var(--color-background-secondary)}
+.menu-card-body{padding:12px 14px}
+.menu-card-name{font-size:20px;font-weight:500;color:var(--color-text-primary);line-height:1.3}
+.menu-card-price{font-size:22px;font-weight:500;color:#E8590C;margin-top:6px}
+.menu-card-check{position:absolute;top:10px;right:10px;width:32px;height:32px;border-radius:50%;background:#E8590C;color:white;display:none;align-items:center;justify-content:center;font-size:18px}
+.menu-card.selected .menu-card-check{display:flex}
+
+.btn-row{display:flex;gap:12px;padding:12px 24px 20px}
+.big-btn{flex:1;padding:28px 12px;border-radius:var(--border-radius-lg);border:none;color:white;font-size:20px;font-weight:500;cursor:pointer;transition:all .2s;display:flex;align-items:center;justify-content:center;gap:8px;min-height:80px}
+.big-btn:disabled{background:var(--color-background-secondary);color:var(--color-text-secondary);cursor:not-allowed}
+.big-btn.orange{background:#E8590C}.big-btn.orange:not(:disabled):hover{background:#c44d09}
+.big-btn.green{background:#2D7D46}.big-btn.green:hover{background:#1e5c32}
+.big-btn.blue{background:#185FA5}.big-btn.blue:hover{background:#0c3d6e}
+.back-btn{flex:1;padding:28px 12px;border-radius:var(--border-radius-lg);border:3px solid #185FA5;background:#E6F1FB;color:#185FA5;font-size:20px;font-weight:500;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;transition:all .2s;min-height:80px}
+.back-btn:hover{background:#B5D4F4}
+
+.customize-header{padding:20px 24px 16px}
+.customize-selected-card{margin:0 24px 20px;background:#FFF3ED;border:2px solid #F7C59F;border-radius:var(--border-radius-lg);padding:16px;display:flex;align-items:center;gap:14px}
+.customize-emoji{font-size:52px}
+.customize-item-name{font-size:22px;font-weight:500;color:var(--color-text-primary)}
+.customize-item-price{font-size:18px;color:#E8590C;font-weight:500;margin-top:4px}
+
+.section-title{font-size:20px;font-weight:500;color:var(--color-text-primary);padding:0 24px;margin-bottom:12px;margin-top:4px}
+.options-list{padding:0 24px;display:flex;flex-direction:column;gap:10px}
+
+.option-row{display:flex;align-items:center;justify-content:space-between;padding:16px 18px;background:var(--color-background-primary);border:2px solid var(--color-border-tertiary);border-radius:var(--border-radius-lg);cursor:pointer;transition:all .2s}
+.option-row:hover{border-color:#E8590C}
+.option-row.selected{background:#FFF3ED;border-color:#E8590C}
+.option-row-left{display:flex;align-items:center;gap:12px}
+.option-icon{font-size:28px}
+.option-name{font-size:20px;font-weight:500;color:var(--color-text-primary)}
+.option-sub{font-size:14px;color:var(--color-text-secondary);margin-top:2px}
+.option-check{width:32px;height:32px;border-radius:50%;border:2px solid var(--color-border-tertiary);background:var(--color-background-secondary);display:flex;align-items:center;justify-content:center;transition:all .2s;flex-shrink:0}
+.option-row.selected .option-check{background:#E8590C;border-color:#E8590C;color:white}
+
+.spicy-row{padding:0 24px;margin-bottom:4px}
+.spicy-outer{border:2px solid var(--color-border-tertiary);border-radius:var(--border-radius-lg);overflow:hidden;transition:border-color .2s}
+.spicy-outer.active{border-color:#E24B4A}
+.spicy-header{display:flex;align-items:center;justify-content:space-between;padding:16px 18px;cursor:pointer;background:var(--color-background-primary);transition:background .2s}
+.spicy-header.active{background:#FCEBEB}
+.spicy-header-left{display:flex;align-items:center;gap:12px}
+.spicy-header-right{display:flex;align-items:center;gap:10px}
+.spicy-badge{padding:4px 14px;border-radius:100px;font-size:16px;font-weight:500}
+.spicy-badge.none{background:var(--color-background-secondary);color:var(--color-text-secondary)}
+.spicy-badge.has{background:#FCEBEB;color:#A32D2D}
+.spicy-levels{display:none;border-top:2px solid #F7C1C1;background:#FCEBEB}
+.spicy-levels.show{display:flex}
+.spicy-level-btn{flex:1;padding:16px 8px;border:none;background:transparent;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:6px;transition:background .2s;border-right:1px solid #F7C1C1}
+.spicy-level-btn:last-child{border-right:none}
+.spicy-level-btn:hover{background:#F7C1C1}
+.spicy-level-btn.sel{background:#E24B4A}
+.spicy-level-btn.sel .sl-label{color:white}
+.sl-emoji{font-size:28px}
+.sl-label{font-size:18px;font-weight:500;color:#A32D2D}
+
+.addon-list{padding:0 24px;display:flex;flex-direction:column;gap:10px;margin-bottom:16px}
+.addon-row{display:flex;align-items:center;justify-content:space-between;padding:16px 18px;background:var(--color-background-primary);border:2px solid var(--color-border-tertiary);border-radius:var(--border-radius-lg);cursor:pointer;transition:all .2s}
+.addon-row:hover{border-color:#2D7D46}
+.addon-row.selected{background:#EAF5EE;border-color:#2D7D46}
+.addon-row.selected .option-check{background:#2D7D46;border-color:#2D7D46;color:white}
+.addon-plus{font-size:18px;color:#2D7D46;font-weight:500}
+
+.confirm-header{padding:20px 24px 16px}
+.confirm-card{margin:0 24px 12px;background:var(--color-background-primary);border:2px solid var(--color-border-tertiary);border-radius:var(--border-radius-lg);overflow:hidden}
+.confirm-item-row{display:flex;align-items:center;gap:14px;padding:16px}
+.confirm-item-emoji{font-size:44px;flex-shrink:0}
+.confirm-item-info{flex:1}
+.confirm-item-name{font-size:20px;font-weight:500;color:var(--color-text-primary)}
+.confirm-item-tags{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+.tag{padding:5px 14px;border-radius:100px;font-size:15px;font-weight:500}
+.tag-orange{background:#FFF3ED;color:#993C1D}
+.tag-green{background:#EAF5EE;color:#3B6D11}
+.tag-red{background:#FCEBEB;color:#A32D2D}
+.confirm-item-right{display:flex;align-items:center;gap:10px;flex-shrink:0}
+.confirm-item-price{font-size:22px;font-weight:500;color:#E8590C}
+.circle-btn{width:44px;height:44px;border-radius:50%;border:2px solid;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all .2s;flex-shrink:0}
+.circle-btn.edit{border-color:#185FA5;background:#E6F1FB;color:#185FA5}
+.circle-btn.edit:hover{background:#B5D4F4}
+.circle-btn.del{border-color:#A32D2D;background:#FCEBEB;color:#A32D2D}
+.circle-btn.del:hover{background:#F7C1C1}
+.circle-btn i{font-size:20px}
+
+.confirm-total-row{display:flex;justify-content:space-between;align-items:center;padding:18px 16px}
+.confirm-total-label{font-size:22px;font-weight:500;color:var(--color-text-primary)}
+.confirm-total-price{font-size:28px;font-weight:500;color:#E8590C}
+
+.note-box{margin:0 24px 16px;padding:14px 16px;background:var(--color-background-secondary);border-radius:var(--border-radius-md);display:flex;align-items:flex-start;gap:10px}
+.note-text{font-size:16px;color:var(--color-text-secondary);line-height:1.6}
+
+.success-wrap{display:flex;flex-direction:column;align-items:center;padding:48px 24px;text-align:center}
+.success-circle{width:100px;height:100px;border-radius:50%;background:#EAF5EE;display:flex;align-items:center;justify-content:center;font-size:52px;margin-bottom:24px;animation:pop .4s cubic-bezier(.175,.885,.32,1.275)}
+@keyframes pop{from{transform:scale(0);opacity:0}to{transform:scale(1);opacity:1}}
+.success-title{font-size:28px;font-weight:500;color:var(--color-text-primary);margin-bottom:10px}
+.success-sub{font-size:18px;color:var(--color-text-secondary);line-height:1.6}
+.order-num{margin:24px 0;padding:16px 32px;background:var(--color-background-secondary);border-radius:var(--border-radius-lg);font-size:32px;font-weight:500;color:var(--color-text-primary);letter-spacing:4px}
+.restart-btn{margin-top:12px;padding:18px 40px;border-radius:var(--border-radius-lg);border:3px solid #E8590C;background:#FFF3ED;color:#E8590C;font-size:20px;font-weight:500;cursor:pointer;transition:all .2s}
+.restart-btn:hover{background:#F7C59F}
+</style>
+</head>
+<body>
+
+<div id="app">
+
+<div class="top-bar">
+  <div style="width:90px"></div>
+  <div class="steps-row">
+    <div class="step-dot current" id="dot-1"><div class="step-dot-circle">1</div><div class="step-dot-label">選餐</div></div>
+    <div class="step-line" id="line-1"></div>
+    <div class="step-dot" id="dot-2"><div class="step-dot-circle">2</div><div class="step-dot-label">客製化</div></div>
+    <div class="step-line" id="line-2"></div>
+    <div class="step-dot" id="dot-3"><div class="step-dot-circle">3</div><div class="step-dot-label">確認</div></div>
+    <div class="step-line" id="line-3"></div>
+    <div class="step-dot" id="dot-4"><div class="step-dot-circle">4</div><div class="step-dot-label">完成</div></div>
+  </div>
+  <div class="bell-wrap">
+    <button class="bell-btn" id="bell-btn" onclick="ringBell()" aria-label="呼叫服務人員">
+      <div class="bell-ripple" id="bell-ripple"></div>
+      <i class="ti ti-bell" aria-hidden="true"></i>
+      <span class="bell-label">服務鈴</span>
+    </button>
+    <div class="bell-tooltip" id="bell-tooltip">🛎️ 已呼叫服務人員！</div>
+  </div>
+</div>
+
+<div class="step active" id="step-1">
+  <div class="menu-header">
+    <div class="menu-title">今天想吃什麼？<span id="cart-badge" style="display:none" class="order-count-badge"><i class="ti ti-check" aria-hidden="true"></i> <span id="cart-count">0</span> 道已選</span></div>
+    <div class="menu-sub">請選擇餐點</div>
+  </div>
+  <div class="category-tabs">
+    <button class="cat-btn active" onclick="filterMenu('all',this)">全部</button>
+    <button class="cat-btn" onclick="filterMenu('rice',this)">飯類</button>
+    <button class="cat-btn" onclick="filterMenu('noodle',this)">麵類</button>
+    <button class="cat-btn" onclick="filterMenu('set',this)">套餐</button>
+  </div>
+  <div class="menu-grid" id="menu-grid"></div>
+  <div class="btn-row">
+    <button class="big-btn orange" id="next1-btn" disabled onclick="goStep(2)">
+      <i class="ti ti-arrow-right" aria-hidden="true"></i> 下一步
+    </button>
+  </div>
+</div>
+
+<div class="step" id="step-2">
+  <div class="customize-header">
+    <div class="menu-title">客製化餐點</div>
+    <div class="menu-sub">依照您的喜好調整</div>
+  </div>
+  <div class="customize-selected-card" id="selected-card-preview"></div>
+  <div class="section-title">🚫 不加配料</div>
+  <div class="options-list" id="remove-options"></div>
+  <div style="height:20px"></div>
+  <div class="section-title">🌶️ 加辣選擇</div>
+  <div class="spicy-row">
+    <div class="spicy-outer" id="spicy-outer">
+      <div class="spicy-header" id="spicy-header" onclick="toggleSpicy()">
+        <div class="spicy-header-left">
+          <span style="font-size:28px">🌶️</span>
+          <div><div class="option-name">加辣</div><div class="option-sub">點選展開選擇辣度</div></div>
+        </div>
+        <div class="spicy-header-right">
+          <span class="spicy-badge none" id="spicy-badge">未選擇</span>
+          <i class="ti ti-chevron-down" aria-hidden="true" id="spicy-chevron" style="font-size:20px;color:var(--color-text-secondary);transition:transform .2s"></i>
+        </div>
+      </div>
+      <div class="spicy-levels" id="spicy-levels">
+        <button class="spicy-level-btn" onclick="setSpicy(0)"><span class="sl-emoji">😊</span><span class="sl-label">不加辣</span></button>
+        <button class="spicy-level-btn" onclick="setSpicy(1)"><span class="sl-emoji">🌶️</span><span class="sl-label">小辣</span></button>
+        <button class="spicy-level-btn" onclick="setSpicy(2)"><span class="sl-emoji">🌶️🌶️</span><span class="sl-label">中辣</span></button>
+        <button class="spicy-level-btn" onclick="setSpicy(3)"><span class="sl-emoji">🌶️🌶️🌶️</span><span class="sl-label">大辣</span></button>
+      </div>
+    </div>
+  </div>
+  <div style="height:20px"></div>
+  <div class="section-title">➕ 加點升級</div>
+  <div class="addon-list" id="addon-options"></div>
+  <div class="btn-row">
+    <button class="back-btn" onclick="backFromCustomize()">
+      <i class="ti ti-arrow-left" aria-hidden="true"></i> 返回
+    </button>
+    <button class="big-btn orange" onclick="saveAndNext()">
+      <i class="ti ti-check" aria-hidden="true"></i> 下一步
+    </button>
+  </div>
+</div>
+
+<div class="step" id="step-3">
+  <div class="confirm-header">
+    <div class="menu-title">確認您的訂單</div>
+    <div class="menu-sub">請確認餐點，可修改或刪除</div>
+  </div>
+  <div id="confirm-detail"></div>
+  <div class="note-box">
+    <span style="font-size:22px;margin-top:1px">ℹ️</span>
+    <span class="note-text">如有任何問題，請按右上角「服務鈴」通知服務人員協助您。</span>
+  </div>
+  <div class="btn-row">
+    <button class="big-btn blue" onclick="goStep(1);prepareAddMore()">
+      <i class="ti ti-plus" aria-hidden="true"></i> 再點一道
+    </button>
+    <button class="big-btn green" onclick="submitOrder()">
+      <i class="ti ti-shopping-cart" aria-hidden="true"></i> 送出訂單
+    </button>
+  </div>
+</div>
+
+<div class="step" id="step-4">
+  <div class="success-wrap">
+    <div class="success-circle">✅</div>
+    <div class="success-title">訂單已送出！</div>
+    <div class="success-sub">請稍候,餐點正在準備中<br>預計等待時間：約 10–15 分鐘</div>
+    <div class="order-num" id="order-num">#A001</div>
+    <div style="font-size:16px;color:var(--color-text-secondary)">請記下您的取餐號碼</div>
+    <button class="restart-btn" onclick="restart()">
+      <i class="ti ti-plus" aria-hidden="true"></i> 加點餐點
+    </button>
+  </div>
+</div>
+
+</div>
+
+<script>
+const menuItems=[
+  {id:1,name:'排骨飯',price:120,emoji:'🍱',category:'rice',desc:'香嫩排骨，配白飯'},
+  {id:2,name:'雞腿飯',price:130,emoji:'🍗',category:'rice',desc:'嫩煎雞腿，配白飯'},
+  {id:3,name:'牛肉麵',price:150,emoji:'🍜',category:'noodle',desc:'紅燒湯底，軟嫩牛肉'},
+  {id:4,name:'乾麵',price:90,emoji:'🍝',category:'noodle',desc:'滷肉乾拌麵'},
+  {id:5,name:'招牌套餐A',price:220,emoji:'🥘',category:'set',desc:'牛肉麵＋湯＋飲料'},
+  {id:6,name:'招牌套餐B',price:200,emoji:'🍲',category:'set',desc:'滷肉飯＋小菜＋湯'},
+];
+const removeOpts=[
+  {id:'r1',label:'不加蔥',emoji:'🌿',sub:'去除所有蔥花'},
+  {id:'r2',label:'不加蒜',emoji:'🧄',sub:'去除蒜末'},
+  {id:'r3',label:'少油',emoji:'🫧',sub:'減少烹調用油'},
+  {id:'r4',label:'少鹽',emoji:'🧂',sub:'減少調味鹽份'},
+];
+const addonOpts=[
+  {id:'a1',label:'加湯',emoji:'🍵',price:20},
+  {id:'a2',label:'加飲料',emoji:'🧃',price:30},
+  {id:'a3',label:'加小菜',emoji:'🥗',price:35},
+];
+
+let cart=[];
+let currentItem=null;
+let currentRemove=[];
+let currentAddons=[];
+let spicyLevel=-1;
+let spicyOpen=false;
+let currentCat='all';
+let editingIndex=-1;
+let bellTimer=null;
+let isAddingMore=false;
+
+function ringBell(){
+  const btn=document.getElementById('bell-btn');
+  const tip=document.getElementById('bell-tooltip');
+  btn.classList.remove('ring');
+  void btn.offsetWidth;
+  btn.classList.add('ring');
+  tip.classList.add('show');
+  if(bellTimer)clearTimeout(bellTimer);
+  bellTimer=setTimeout(()=>{tip.classList.remove('show');btn.classList.remove('ring');},2500);
+}
+
+function renderMenu(cat){
+  const grid=document.getElementById('menu-grid');
+  const items=cat==='all'?menuItems:menuItems.filter(i=>i.category===cat);
+  grid.innerHTML=items.map(item=>{
+    const inCart=cart.some(c=>c.itemId===item.id);
+    const isCurrent=currentItem&&currentItem.id===item.id;
+    return`<div class="menu-card ${isCurrent?'selected':''}" onclick="selectItem(${item.id})">
+      <div class="menu-card-img">${item.emoji}</div>
+      <div class="menu-card-body">
+        <div class="menu-card-name">${item.name}${inCart?'<span style="font-size:13px;color:#2D7D46;margin-left:6px">✓已加入</span>':''}</div>
+        <div style="font-size:14px;color:var(--color-text-secondary);margin-top:4px">${item.desc}</div>
+        <div class="menu-card-price">$${item.price}</div>
+      </div>
+      <div class="menu-card-check"><i class="ti ti-check" aria-hidden="true"></i></div>
+    </div>`;
+  }).join('');
+}
+
+function filterMenu(cat,el){
+  currentCat=cat;
+  document.querySelectorAll('.cat-btn').forEach(b=>b.classList.remove('active'));
+  el.classList.add('active');
+  renderMenu(cat);
+}
+
+function selectItem(id){
+  currentItem=menuItems.find(i=>i.id===id);
+  currentRemove=[];currentAddons=[];spicyLevel=-1;spicyOpen=false;
+  document.getElementById('next1-btn').disabled=false;
+  renderMenu(currentCat);
+}
+
+function prepareAddMore(){
+  isAddingMore=true;
+  currentItem=null;currentRemove=[];currentAddons=[];spicyLevel=-1;spicyOpen=false;editingIndex=-1;
+  document.getElementById('next1-btn').disabled=true;
+  renderMenu(currentCat);
+  updateCartBadge();
+}
+
+function updateCartBadge(){
+  const b=document.getElementById('cart-badge');
+  document.getElementById('cart-count').textContent=cart.length;
+  b.style.display=cart.length>0?'inline-flex':'none';
+}
+
+function backFromCustomize(){
+  if(isAddingMore){
+    isAddingMore=false;
+    goStep(3);
+  } else {
+    goStep(1);
+  }
+}
+
+function toggleSpicy(){
+  spicyOpen=!spicyOpen;
+  document.getElementById('spicy-levels').classList.toggle('show',spicyOpen);
+  document.getElementById('spicy-chevron').style.transform=spicyOpen?'rotate(180deg)':'';
+  document.getElementById('spicy-outer').classList.toggle('active',spicyOpen||spicyLevel>=0);
+  document.getElementById('spicy-header').classList.toggle('active',spicyOpen||spicyLevel>=0);
+}
+
+function setSpicy(lvl){
+  spicyLevel=lvl;
+  const labels=['不加辣','小辣','中辣','大辣'];
+  const badge=document.getElementById('spicy-badge');
+  badge.textContent=labels[lvl];
+  badge.className='spicy-badge '+(lvl===0?'none':'has');
+  document.querySelectorAll('.spicy-level-btn').forEach((b,i)=>b.classList.toggle('sel',i===lvl));
+  document.getElementById('spicy-outer').classList.add('active');
+  document.getElementById('spicy-header').classList.add('active');
+}
+
+function renderStep2(){
+  document.getElementById('selected-card-preview').innerHTML=
+    `<div class="customize-emoji">${currentItem.emoji}</div>
+     <div><div class="customize-item-name">${currentItem.name}</div>
+     <div class="customize-item-price">$${currentItem.price}</div></div>`;
+  document.getElementById('remove-options').innerHTML=removeOpts.map(o=>`
+    <div class="option-row ${currentRemove.includes(o.id)?'selected':''}" onclick="toggleRemove('${o.id}')">
+      <div class="option-row-left">
+        <span class="option-icon">${o.emoji}</span>
+        <div><div class="option-name">${o.label}</div><div class="option-sub">${o.sub}</div></div>
+      </div>
+      <div class="option-check">${currentRemove.includes(o.id)?'<i class="ti ti-check" aria-hidden="true"></i>':''}</div>
+    </div>`).join('');
+  document.getElementById('addon-options').innerHTML=addonOpts.map(o=>`
+    <div class="addon-row ${currentAddons.includes(o.id)?'selected':''}" onclick="toggleAddon('${o.id}')">
+      <div class="option-row-left">
+        <span class="option-icon">${o.emoji}</span>
+        <div class="option-name">${o.label}</div>
+      </div>
+      <div style="display:flex;align-items:center;gap:12px">
+        <span class="addon-plus">+$${o.price}</span>
+        <div class="option-check">${currentAddons.includes(o.id)?'<i class="ti ti-check" style="color:white" aria-hidden="true"></i>':''}</div>
+      </div>
+    </div>`).join('');
+  if(spicyLevel>=0){
+    const labels=['不加辣','小辣','中辣','大辣'];
+    document.getElementById('spicy-badge').textContent=labels[spicyLevel];
+    document.getElementById('spicy-badge').className='spicy-badge '+(spicyLevel===0?'none':'has');
+    document.querySelectorAll('.spicy-level-btn').forEach((b,i)=>b.classList.toggle('sel',i===spicyLevel));
+    document.getElementById('spicy-outer').classList.add('active');
+    document.getElementById('spicy-header').classList.add('active');
+  } else {
+    document.getElementById('spicy-badge').textContent='未選擇';
+    document.getElementById('spicy-badge').className='spicy-badge none';
+    document.querySelectorAll('.spicy-level-btn').forEach(b=>b.classList.remove('sel'));
+    document.getElementById('spicy-outer').classList.remove('active');
+    document.getElementById('spicy-header').classList.remove('active');
+  }
+  document.getElementById('spicy-levels').classList.toggle('show',spicyOpen);
+  document.getElementById('spicy-chevron').style.transform=spicyOpen?'rotate(180deg)':'';
+}
+
+function toggleRemove(id){
+  if(currentRemove.includes(id))currentRemove=currentRemove.filter(x=>x!==id);else currentRemove.push(id);
+  renderStep2();
+}
+function toggleAddon(id){
+  if(currentAddons.includes(id))currentAddons=currentAddons.filter(x=>x!==id);else currentAddons.push(id);
+  renderStep2();
+}
+
+function saveAndNext(){
+  if(editingIndex>=0){
+    cart[editingIndex]={itemId:currentItem.id,item:currentItem,remove:[...currentRemove],addons:[...currentAddons],spicy:spicyLevel};
+    editingIndex=-1;
+  } else {
+    cart.push({itemId:currentItem.id,item:currentItem,remove:[...currentRemove],addons:[...currentAddons],spicy:spicyLevel});
+  }
+  isAddingMore=false;
+  updateCartBadge();
+  renderStep3();
+  goStep(3);
+}
+
+function editCartItem(idx){
+  const entry=cart[idx];
+  editingIndex=idx;
+  isAddingMore=false;
+  currentItem=entry.item;
+  currentRemove=[...entry.remove];
+  currentAddons=[...entry.addons];
+  spicyLevel=entry.spicy;
+  spicyOpen=false;
+  goStep(2);
+}
+
+function deleteCartItem(idx){
+  cart.splice(idx,1);
+  updateCartBadge();
+  if(cart.length===0){
+    prepareAddMore();
+    isAddingMore=false;
+    goStep(1);
+  } else {
+    renderStep3();
+  }
+}
+
+function renderStep3(){
+  const spicyLabels=['不加辣','小辣','中辣','大辣'];
+  let html='';let grandTotal=0;
+  cart.forEach((entry,idx)=>{
+    const addonTotal=addonOpts.filter(o=>entry.addons.includes(o.id)).reduce((s,o)=>s+o.price,0);
+    const itemTotal=entry.item.price+addonTotal;grandTotal+=itemTotal;
+    const removeTags=removeOpts.filter(o=>entry.remove.includes(o.id)).map(o=>`<span class="tag tag-orange">${o.emoji} ${o.label}</span>`).join('');
+    const addonTags=addonOpts.filter(o=>entry.addons.includes(o.id)).map(o=>`<span class="tag tag-green">${o.emoji} ${o.label}</span>`).join('');
+    const spicyTag=entry.spicy>0?`<span class="tag tag-red">🌶️ ${spicyLabels[entry.spicy]}</span>`:(entry.spicy===0?`<span class="tag tag-orange">😊 不加辣</span>`:'');
+    html+=`<div class="confirm-card">
+      <div class="confirm-item-row">
+        <div class="confirm-item-emoji">${entry.item.emoji}</div>
+        <div class="confirm-item-info">
+          <div class="confirm-item-name">第${idx+1}道：${entry.item.name}</div>
+          <div class="confirm-item-tags">${removeTags}${spicyTag}${addonTags}${!removeTags&&!spicyTag&&!addonTags?'<span style="font-size:14px;color:var(--color-text-secondary)">無特別要求</span>':''}</div>
+        </div>
+        <div class="confirm-item-right">
+          <div class="confirm-item-price">$${itemTotal}</div>
+          <button class="circle-btn edit" onclick="editCartItem(${idx})" aria-label="修改">
+            <i class="ti ti-edit" aria-hidden="true"></i>
+          </button>
+          <button class="circle-btn del" onclick="deleteCartItem(${idx})" aria-label="刪除">
+            <i class="ti ti-trash" aria-hidden="true"></i>
+          </button>
+        </div>
+      </div>
+    </div>`;
+  });
+  html+=`<div style="margin:0 24px 16px;background:var(--color-background-primary);border:2px solid var(--color-border-tertiary);border-radius:var(--border-radius-lg)">
+    <div class="confirm-total-row"><div class="confirm-total-label">合計（${cart.length}道）</div><div class="confirm-total-price">$${grandTotal}</div></div>
+  </div>`;
+  document.getElementById('confirm-detail').innerHTML=html;
+}
+
+function goStep(n){
+  document.querySelectorAll('.step').forEach(s=>s.classList.remove('active'));
+  document.getElementById('step-'+n).classList.add('active');
+  updateStepsBar(n);
+  if(n===2)renderStep2();
+  if(n===3)renderStep3();
+}
+
+function updateStepsBar(cur){
+  for(let i=1;i<=4;i++){
+    const d=document.getElementById('dot-'+i);
+    d.classList.remove('current','done');
+    if(i<cur)d.classList.add('done');else if(i===cur)d.classList.add('current');
+  }
+  for(let i=1;i<=3;i++){
+    const l=document.getElementById('line-'+i);
+    if(l)l.classList.toggle('done',i<cur);
+  }
+}
+
+function submitOrder(){
+  const num='A'+String(Math.floor(Math.random()*900)+100);
+  document.getElementById('order-num').textContent='#'+num;
+  goStep(4);
+}
+
+function restart(){
+  cart=[];currentItem=null;currentRemove=[];currentAddons=[];spicyLevel=-1;spicyOpen=false;editingIndex=-1;isAddingMore=false;
+  document.getElementById('next1-btn').disabled=true;
+  document.getElementById('cart-badge').style.display='none';
+  currentCat='all';
+  goStep(1);
+  renderMenu('all');
+  document.querySelectorAll('.cat-btn').forEach((b,i)=>b.classList.toggle('active',i===0));
+}
+
+renderMenu('all');
+</script>
+
+</body>
+</html>
