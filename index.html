@@ -53,13 +53,11 @@ body{font-family:var(--font-sans);background:#fafafa;-webkit-font-smoothing:anti
 .menu-sub{font-size:16px;color:var(--color-text-secondary);margin-top:4px}
 .order-count-badge{display:inline-flex;align-items:center;gap:6px;background:#EAF5EE;color:#3B6D11;border-radius:100px;padding:4px 14px;font-size:15px;font-weight:500;margin-left:10px}
 
-/* 將分類標籤改為吸頂效果，滾動時會固定在畫面上方 */
 .category-tabs{display:flex;gap:10px;padding:10px 24px 16px;overflow-x:auto;scrollbar-width:none;position:sticky;top:0;z-index:10;background:var(--color-background-primary);margin-top:-4px}
 .category-tabs::-webkit-scrollbar{display:none}
 .cat-btn{padding:10px 20px;border-radius:100px;border:2px solid var(--color-border-tertiary);background:var(--color-background-primary);font-size:16px;font-weight:500;cursor:pointer;white-space:nowrap;color:var(--color-text-primary);transition:all .2s}
 .cat-btn.active{background:#E8590C;border-color:#E8590C;color:white}
 
-/* 網格與卡片設計重構 */
 .menu-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:16px;padding:0 24px 16px}
 .section-header{grid-column:1 / -1;font-size:22px;font-weight:bold;color:var(--color-text-primary);margin-top:12px;margin-bottom:-4px;padding-bottom:8px;border-bottom:2px solid var(--color-border-tertiary);scroll-margin-top:70px}
 .menu-card{background:var(--color-background-primary);border:2px solid var(--color-border-tertiary);border-radius:var(--border-radius-lg);overflow:hidden;cursor:pointer;transition:all .2s;position:relative;display:flex;flex-direction:column;padding:0}
@@ -104,6 +102,26 @@ body{font-family:var(--font-sans);background:#fafafa;-webkit-font-smoothing:anti
 .option-check{width:32px;height:32px;border-radius:50%;border:2px solid var(--color-border-tertiary);background:var(--color-background-secondary);display:flex;align-items:center;justify-content:center;transition:all .2s;flex-shrink:0}
 .option-row.selected .option-check{background:#E8590C;border-color:#E8590C;color:white}
 
+.spicy-row{padding:0 24px;margin-bottom:4px}
+.spicy-outer{border:2px solid var(--color-border-tertiary);border-radius:var(--border-radius-lg);overflow:hidden;transition:border-color .2s}
+.spicy-outer.active{border-color:#E24B4A}
+.spicy-header{display:flex;align-items:center;justify-content:space-between;padding:16px 18px;cursor:pointer;background:var(--color-background-primary);transition:background .2s}
+.spicy-header.active{background:#FCEBEB}
+.spicy-header-left{display:flex;align-items:center;gap:12px}
+.spicy-header-right{display:flex;align-items:center;gap:10px}
+.spicy-badge{padding:4px 14px;border-radius:100px;font-size:16px;font-weight:500}
+.spicy-badge.none{background:var(--color-background-secondary);color:var(--color-text-secondary)}
+.spicy-badge.has{background:#FCEBEB;color:#A32D2D}
+.spicy-levels{display:none;border-top:2px solid #F7C1C1;background:#FCEBEB}
+.spicy-levels.show{display:flex}
+.spicy-level-btn{flex:1;padding:16px 8px;border:none;background:transparent;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:6px;transition:background .2s;border-right:1px solid #F7C1C1}
+.spicy-level-btn:last-child{border-right:none}
+.spicy-level-btn:hover{background:#F7C1C1}
+.spicy-level-btn.sel{background:#E24B4A}
+.spicy-level-btn.sel .sl-label{color:white}
+.sl-emoji{font-size:28px}
+.sl-label{font-size:18px;font-weight:500;color:#A32D2D}
+
 .addon-row:hover{border-color:#2D7D46}
 .addon-row.selected{background:#EAF5EE;border-color:#2D7D46}
 .addon-row.selected .option-check{background:#2D7D46;border-color:#2D7D46;color:white}
@@ -119,6 +137,7 @@ body{font-family:var(--font-sans);background:#fafafa;-webkit-font-smoothing:anti
 .tag{padding:6px 14px;border-radius:8px;font-size:15px;font-weight:500;display:inline-block;width:fit-content;}
 .tag-orange{background:#FFF3ED;color:#993C1D;border:1px solid #F7C59F;}
 .tag-green{background:#EAF5EE;color:#3B6D11;border:1px solid #c3e6cb;}
+.tag-red{background:#FCEBEB;color:#A32D2D;border:1px solid #F7C1C1;}
 .confirm-item-right{display:flex;flex-direction:column;align-items:flex-end;gap:10px;flex-shrink:0}
 .confirm-item-price{font-size:22px;font-weight:500;color:#E8590C}
 .action-btns{display:flex;gap:8px}
@@ -191,11 +210,40 @@ body{font-family:var(--font-sans);background:#fafafa;-webkit-font-smoothing:anti
 
 <div class="step" id="step-2">
   <div class="customize-header">
-    <div class="menu-title">餐點加購與飲料</div>
-    <div class="menu-sub">請選擇您隨餐附贈的飲品</div>
+    <div class="menu-title">餐點客製與加購</div>
+    <div class="menu-sub">請依您的喜好調整，並選擇飲品</div>
   </div>
   <div class="customize-selected-card" id="selected-card-preview"></div>
   
+  <div class="section-title">🚫 不加配料 <span class="opt-badge" style="background:var(--color-background-secondary);color:var(--color-text-secondary);border:1px solid var(--color-border-tertiary)">可多選</span></div>
+  <div class="options-list" id="remove-options"></div>
+  
+  <div style="height:20px"></div>
+  
+  <div class="section-title">🌶️ 加辣選擇 <span class="opt-badge" style="background:var(--color-background-secondary);color:var(--color-text-secondary);border:1px solid var(--color-border-tertiary)">單選</span></div>
+  <div class="spicy-row">
+    <div class="spicy-outer" id="spicy-outer">
+      <div class="spicy-header" id="spicy-header" onclick="toggleSpicy()">
+        <div class="spicy-header-left">
+          <span style="font-size:28px">🌶️</span>
+          <div><div class="option-name">加辣</div><div class="option-sub" style="color:var(--color-text-secondary);margin-top:2px;font-weight:normal">點選展開選擇辣度</div></div>
+        </div>
+        <div class="spicy-header-right">
+          <span class="spicy-badge none" id="spicy-badge">未選擇</span>
+          <i class="ti ti-chevron-down" aria-hidden="true" id="spicy-chevron" style="font-size:20px;color:var(--color-text-secondary);transition:transform .2s"></i>
+        </div>
+      </div>
+      <div class="spicy-levels" id="spicy-levels">
+        <button class="spicy-level-btn" onclick="setSpicy(0)"><span class="sl-emoji">😊</span><span class="sl-label">不加辣</span></button>
+        <button class="spicy-level-btn" onclick="setSpicy(1)"><span class="sl-emoji">🌶️</span><span class="sl-label">小辣</span></button>
+        <button class="spicy-level-btn" onclick="setSpicy(2)"><span class="sl-emoji">🌶️🌶️</span><span class="sl-label">中辣</span></button>
+        <button class="spicy-level-btn" onclick="setSpicy(3)"><span class="sl-emoji">🌶️🌶️🌶️</span><span class="sl-label">大辣</span></button>
+      </div>
+    </div>
+  </div>
+  
+  <div style="height:20px"></div>
+
   <div class="section-title">搭配兩杯 - 先選第一杯 <span class="req-badge">必選 1 項</span></div>
   <div class="options-list" id="drink1-options"></div>
   
@@ -267,6 +315,13 @@ const menuItems=[
   {id:9,name:'蕈菇奶起司歐姆蕾',price:304,emoji:'🍄',category:'brunch',desc:'橙香丹麥、奶油炒菇歐姆蕾、雙色起司、綜合生菜、巴薩米可醋醬、辣海地醃菜'}
 ];
 
+const removeOpts=[
+  {id:'r1',label:'不加蔥',emoji:'🌿',sub:'去除所有蔥花'},
+  {id:'r2',label:'不加蒜',emoji:'🧄',sub:'去除蒜末'},
+  {id:'r3',label:'少油',emoji:'🫧',sub:'減少烹調用油'},
+  {id:'r4',label:'少鹽',emoji:'🧂',sub:'減少調味鹽份'},
+];
+
 const drink1Opts=[
   {id:'d1_1',label:'新鮮果汁',sub:'內含蜂蜜，一歲以下幼童請避免飲用'},
   {id:'d1_2',label:'明日葉汁',sub:''},
@@ -319,6 +374,9 @@ const extraOpts=[
 
 let cart=[];
 let currentItem=null;
+let currentRemove=[];
+let spicyLevel=-1;
+let spicyOpen=false;
 let selectedDrink1=null;
 let selectedDrink2=null;
 let selectedExtras=[];
@@ -373,11 +431,9 @@ function renderMenu(){
 }
 
 function scrollToSection(secId, el){
-  // 變更標籤的顯示樣式
   document.querySelectorAll('.cat-btn').forEach(b=>b.classList.remove('active'));
   el.classList.add('active');
 
-  // 滑動定位
   if(secId === 'all') {
     window.scrollTo({top: 0, behavior: 'smooth'});
   } else {
@@ -390,21 +446,23 @@ function scrollToSection(secId, el){
 
 function selectItem(id){
   currentItem=menuItems.find(i=>i.id===id);
+  currentRemove=[];
+  spicyLevel=-1;
+  spicyOpen=false;
   selectedDrink1=null;
   selectedDrink2=null;
   selectedExtras=[];
   document.getElementById('next1-btn').disabled=false;
   
-  // 僅更新 DOM 樣式，避免畫面重新整理導致滑動位置跑掉
   document.querySelectorAll('.menu-card').forEach(card => card.classList.remove('selected'));
   document.querySelectorAll(`.menu-card[data-id="${id}"]`).forEach(card => card.classList.add('selected'));
 }
 
 function prepareAddMore(){
   isAddingMore=true;
-  currentItem=null;selectedDrink1=null;selectedDrink2=null;selectedExtras=[];editingIndex=-1;
+  currentItem=null;currentRemove=[];spicyLevel=-1;spicyOpen=false;selectedDrink1=null;selectedDrink2=null;selectedExtras=[];editingIndex=-1;
   document.getElementById('next1-btn').disabled=true;
-  renderMenu(); // 重新渲染以更新「已加入」標籤
+  renderMenu();
   updateCartBadge();
 }
 
@@ -425,6 +483,31 @@ function backFromCustomize(){
 
 function checkStep2Valid() {
   document.getElementById('next2-btn').disabled = !(selectedDrink1 && selectedDrink2);
+}
+
+function toggleRemove(id){
+  if(currentRemove.includes(id)) currentRemove=currentRemove.filter(x=>x!==id);
+  else currentRemove.push(id);
+  renderStep2();
+}
+
+function toggleSpicy(){
+  spicyOpen=!spicyOpen;
+  document.getElementById('spicy-levels').classList.toggle('show',spicyOpen);
+  document.getElementById('spicy-chevron').style.transform=spicyOpen?'rotate(180deg)':'';
+  document.getElementById('spicy-outer').classList.toggle('active',spicyOpen||spicyLevel>=0);
+  document.getElementById('spicy-header').classList.toggle('active',spicyOpen||spicyLevel>=0);
+}
+
+function setSpicy(lvl){
+  spicyLevel=lvl;
+  const labels=['不加辣','小辣','中辣','大辣'];
+  const badge=document.getElementById('spicy-badge');
+  badge.textContent=labels[lvl];
+  badge.className='spicy-badge '+(lvl===0?'none':'has');
+  document.querySelectorAll('.spicy-level-btn').forEach((b,i)=>b.classList.toggle('sel',i===lvl));
+  document.getElementById('spicy-outer').classList.add('active');
+  document.getElementById('spicy-header').classList.add('active');
 }
 
 function selectD1(id){
@@ -451,7 +534,38 @@ function renderStep2(){
      <div><div class="customize-item-name">${currentItem.name}</div>
      <div class="customize-item-price">NT$ ${currentItem.price}</div></div>`;
   
-  // 第一杯 (單選)
+  // 不加配料
+  document.getElementById('remove-options').innerHTML=removeOpts.map(o=>`
+    <div class="option-row ${currentRemove.includes(o.id)?'selected':''}" onclick="toggleRemove('${o.id}')">
+      <div class="option-row-left">
+        <span style="font-size:24px;margin-right:8px">${o.emoji}</span>
+        <div>
+          <div class="option-name">${o.label}</div>
+          <div class="option-sub" style="color:var(--color-text-secondary);font-weight:normal">${o.sub}</div>
+        </div>
+      </div>
+      <div class="option-check">${currentRemove.includes(o.id)?'<i class="ti ti-check" aria-hidden="true"></i>':''}</div>
+    </div>`).join('');
+
+  // 辣度狀態
+  if(spicyLevel>=0){
+    const labels=['不加辣','小辣','中辣','大辣'];
+    document.getElementById('spicy-badge').textContent=labels[spicyLevel];
+    document.getElementById('spicy-badge').className='spicy-badge '+(spicyLevel===0?'none':'has');
+    document.querySelectorAll('.spicy-level-btn').forEach((b,i)=>b.classList.toggle('sel',i===spicyLevel));
+    document.getElementById('spicy-outer').classList.add('active');
+    document.getElementById('spicy-header').classList.add('active');
+  } else {
+    document.getElementById('spicy-badge').textContent='未選擇';
+    document.getElementById('spicy-badge').className='spicy-badge none';
+    document.querySelectorAll('.spicy-level-btn').forEach(b=>b.classList.remove('sel'));
+    document.getElementById('spicy-outer').classList.remove('active');
+    document.getElementById('spicy-header').classList.remove('active');
+  }
+  document.getElementById('spicy-levels').classList.toggle('show',spicyOpen);
+  document.getElementById('spicy-chevron').style.transform=spicyOpen?'rotate(180deg)':'';
+
+  // 第一杯
   document.getElementById('drink1-options').innerHTML=drink1Opts.map(o=>`
     <div class="option-row ${selectedDrink1===o.id?'selected':''}" onclick="selectD1('${o.id}')">
       <div class="option-row-left">
@@ -463,7 +577,7 @@ function renderStep2(){
       <div class="option-check">${selectedDrink1===o.id?'<i class="ti ti-check" aria-hidden="true"></i>':''}</div>
     </div>`).join('');
   
-  // 第二杯 (單選)
+  // 第二杯
   document.getElementById('drink2-options').innerHTML=drink2Opts.map(o=>`
     <div class="option-row ${selectedDrink2===o.id?'selected':''}" onclick="selectD2('${o.id}')">
       <div class="option-row-left">
@@ -475,7 +589,7 @@ function renderStep2(){
       </div>
     </div>`).join('');
 
-  // 優惠加點 (多選)
+  // 優惠加點
   document.getElementById('extra-options').innerHTML=extraOpts.map(o=>`
     <div class="option-row addon-row ${selectedExtras.includes(o.id)?'selected':''}" onclick="toggleExtra('${o.id}')">
       <div class="option-row-left">
@@ -495,10 +609,10 @@ function renderStep2(){
 
 function saveAndNext(){
   if(editingIndex>=0){
-    cart[editingIndex]={itemId:currentItem.id, item:currentItem, drink1:selectedDrink1, drink2:selectedDrink2, extras:[...selectedExtras]};
+    cart[editingIndex]={itemId:currentItem.id, item:currentItem, remove:[...currentRemove], spicy:spicyLevel, drink1:selectedDrink1, drink2:selectedDrink2, extras:[...selectedExtras]};
     editingIndex=-1;
   } else {
-    cart.push({itemId:currentItem.id, item:currentItem, drink1:selectedDrink1, drink2:selectedDrink2, extras:[...selectedExtras]});
+    cart.push({itemId:currentItem.id, item:currentItem, remove:[...currentRemove], spicy:spicyLevel, drink1:selectedDrink1, drink2:selectedDrink2, extras:[...selectedExtras]});
   }
   isAddingMore=false;
   updateCartBadge();
@@ -511,6 +625,9 @@ function editCartItem(idx){
   editingIndex=idx;
   isAddingMore=false;
   currentItem=entry.item;
+  currentRemove=[...entry.remove];
+  spicyLevel=entry.spicy;
+  spicyOpen=false;
   selectedDrink1=entry.drink1;
   selectedDrink2=entry.drink2;
   selectedExtras=[...entry.extras];
@@ -531,8 +648,9 @@ function deleteCartItem(idx){
 
 function renderStep3(){
   let html='';let grandTotal=0;
+  const spicyLabels=['不加辣','小辣','中辣','大辣'];
+
   cart.forEach((entry,idx)=>{
-    // 計算總價
     let d2Price = 0;
     const d2Obj = drink2Opts.find(o=>o.id===entry.drink2);
     if(d2Obj) d2Price = d2Obj.price;
@@ -541,10 +659,11 @@ function renderStep3(){
     const itemTotal = entry.item.price + d2Price + extraTotal;
     grandTotal += itemTotal;
     
-    // 取得名稱標籤
+    const removeTags = removeOpts.filter(o=>entry.remove.includes(o.id)).map(o=>`<span class="tag tag-orange">${o.emoji} ${o.label}</span>`).join('');
+    const spicyTag = entry.spicy>0?`<span class="tag tag-red">🌶️ ${spicyLabels[entry.spicy]}</span>`:(entry.spicy===0?`<span class="tag tag-orange">😊 不加辣</span>`:'');
     const d1Obj = drink1Opts.find(o=>o.id===entry.drink1);
-    const d1Tag = d1Obj ? `<span class="tag tag-orange">第一杯：${d1Obj.label}</span>` : '';
-    const d2Tag = d2Obj ? `<span class="tag tag-orange">第二杯：${d2Obj.label}${d2Obj.price>0?' (+NT$'+d2Obj.price+')':''}</span>` : '';
+    const d1Tag = d1Obj ? `<span class="tag tag-green">飲①：${d1Obj.label}</span>` : '';
+    const d2Tag = d2Obj ? `<span class="tag tag-green">飲②：${d2Obj.label}${d2Obj.price>0?' (+NT$'+d2Obj.price+')':''}</span>` : '';
     const exTags = extraOpts.filter(o=>entry.extras.includes(o.id)).map(o=>`<span class="tag tag-green">加點：${o.label} (+NT$${o.price})</span>`).join('');
     
     html+=`<div class="confirm-card">
@@ -553,6 +672,8 @@ function renderStep3(){
         <div class="confirm-item-info">
           <div class="confirm-item-name">第${idx+1}道：${entry.item.name}</div>
           <div class="confirm-item-tags">
+            ${removeTags}
+            ${spicyTag}
             ${d1Tag}
             ${d2Tag}
             ${exTags}
@@ -606,7 +727,7 @@ function submitOrder(){
 }
 
 function restart(){
-  cart=[];currentItem=null;selectedDrink1=null;selectedDrink2=null;selectedExtras=[];editingIndex=-1;isAddingMore=false;
+  cart=[];currentItem=null;currentRemove=[];spicyLevel=-1;spicyOpen=false;selectedDrink1=null;selectedDrink2=null;selectedExtras=[];editingIndex=-1;isAddingMore=false;
   document.getElementById('next1-btn').disabled=true;
   document.getElementById('cart-badge').style.display='none';
   goStep(1);
