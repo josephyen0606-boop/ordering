@@ -53,7 +53,6 @@ body{font-family:var(--font-sans);background:#fafafa;-webkit-font-smoothing:anti
 .menu-sub{font-size:16px;color:var(--color-text-secondary);margin-top:4px}
 .order-count-badge{display:inline-flex;align-items:center;gap:6px;background:#EAF5EE;color:#3B6D11;border-radius:100px;padding:4px 14px;font-size:15px;font-weight:500;margin-left:10px}
 
-/* 分類標籤在有頂部導覽列的狀態下也要保持吸頂 */
 .category-tabs{display:flex;gap:10px;padding:10px 24px 16px;overflow-x:auto;scrollbar-width:none;position:sticky;top:80px;z-index:10;background:var(--color-background-primary);margin-top:-4px;border-bottom:1px solid var(--color-background-secondary)}
 .category-tabs::-webkit-scrollbar{display:none}
 .cat-btn{padding:10px 20px;border-radius:100px;border:2px solid var(--color-border-tertiary);background:var(--color-background-primary);font-size:16px;font-weight:500;cursor:pointer;white-space:nowrap;color:var(--color-text-primary);transition:all .2s}
@@ -64,17 +63,19 @@ body{font-family:var(--font-sans);background:#fafafa;-webkit-font-smoothing:anti
 .menu-card{background:var(--color-background-primary);border:2px solid var(--color-border-tertiary);border-radius:var(--border-radius-lg);overflow:hidden;cursor:pointer;transition:all .2s;position:relative;display:flex;flex-direction:column;padding:0}
 .menu-card:hover{border-color:#E8590C;transform:translateY(-2px)}
 .menu-card.selected{border-color:#E8590C;border-width:3px;}
-.menu-card-emoji{font-size:64px;display:flex;align-items:center;justify-content:center;height:140px;background:var(--color-background-secondary);width:100%;border-bottom:1px solid var(--color-border-tertiary)}
+
+/* 圖片容器 CSS 更新：移除 Emoji 屬性，改為固定高度裁切 */
+.menu-card-emoji{height:160px;width:100%;display:flex;align-items:center;justify-content:center;background:var(--color-background-secondary);border-bottom:1px solid var(--color-border-tertiary);overflow:hidden;padding:0;}
 .menu-card.selected .menu-card-emoji{background:#FFF3ED;}
+
 .menu-card-body{padding:12px;display:flex;flex-direction:column;flex:1}
 .menu-card-name{font-size:17px;font-weight:600;color:var(--color-text-primary);line-height:1.3}
 .menu-card-desc{font-size:13px;color:var(--color-text-secondary);margin-top:6px;line-height:1.4;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
 .menu-card-price{font-size:20px;font-weight:600;color:#E8590C;margin-top:auto;padding-top:10px;display:flex;align-items:center;justify-content:space-between}
-.menu-card-check{position:absolute;top:10px;right:10px;width:32px;height:32px;border-radius:50%;background:#E8590C;color:white;display:none;align-items:center;justify-content:center;font-size:18px;box-shadow:0 2px 4px rgba(0,0,0,0.1)}
+.menu-card-check{position:absolute;top:10px;right:10px;width:32px;height:32px;border-radius:50%;background:#E8590C;color:white;display:none;align-items:center;justify-content:center;font-size:18px;box-shadow:0 2px 4px rgba(0,0,0,0.1);z-index:2;}
 .menu-card.selected .menu-card-check{display:flex}
 .cart-badge-sm{font-size:12px;color:#2D7D46;background:#EAF5EE;padding:2px 6px;border-radius:4px;}
 
-/* 底部釘選按鈕列 */
 .btn-row{display:flex;gap:12px;padding:16px 24px;position:sticky;bottom:0;background:var(--color-background-primary);border-top:1px solid var(--color-border-tertiary);box-shadow:0 -4px 12px rgba(0,0,0,0.05);z-index:100;margin-top:auto;}
 .big-btn{flex:1;padding:22px 12px;border-radius:var(--border-radius-lg);border:none;color:white;font-size:20px;font-weight:500;cursor:pointer;transition:all .2s;display:flex;align-items:center;justify-content:center;gap:8px;min-height:70px}
 .big-btn:disabled{background:var(--color-background-secondary);color:var(--color-text-secondary);cursor:not-allowed}
@@ -86,7 +87,9 @@ body{font-family:var(--font-sans);background:#fafafa;-webkit-font-smoothing:anti
 
 .customize-header{padding:20px 24px 16px}
 .customize-selected-card{margin:0 24px 20px;background:#FFF3ED;border:2px solid #F7C59F;border-radius:var(--border-radius-lg);padding:16px;display:flex;align-items:center;gap:14px}
-.customize-emoji{font-size:42px}
+
+/* 客製化小圖片 CSS 更新 */
+.customize-emoji{width:80px;height:80px;border-radius:8px;overflow:hidden;flex-shrink:0;background:var(--color-background-secondary);}
 .customize-item-name{font-size:20px;font-weight:500;color:var(--color-text-primary)}
 .customize-item-price{font-size:18px;color:#E8590C;font-weight:500;margin-top:4px}
 
@@ -121,7 +124,9 @@ body{font-family:var(--font-sans);background:#fafafa;-webkit-font-smoothing:anti
 .confirm-header{padding:20px 24px 16px}
 .confirm-card{margin:0 24px 12px;background:var(--color-background-primary);border:2px solid var(--color-border-tertiary);border-radius:var(--border-radius-lg);overflow:hidden}
 .confirm-item-row{display:flex;align-items:center;gap:14px;padding:16px}
-.confirm-item-emoji{font-size:36px;flex-shrink:0;background:var(--color-background-secondary);padding:10px;border-radius:8px;}
+
+/* 確認訂單頁面圖片 CSS 更新 */
+.confirm-item-emoji{width:70px;height:70px;border-radius:8px;overflow:hidden;flex-shrink:0;background:var(--color-background-secondary);padding:0;}
 .confirm-item-info{flex:1}
 .confirm-item-name{font-size:20px;font-weight:500;color:var(--color-text-primary)}
 .confirm-item-tags{display:flex;flex-direction:column;gap:6px;margin-top:10px}
@@ -256,23 +261,24 @@ body{font-family:var(--font-sans);background:#fafafa;-webkit-font-smoothing:anti
 </div>
 
 <script>
+// 這裡的 img 屬性已經全部換成了指定好的照片檔名！
 const menuItems=[
-  {id:1, name:'橙香法式丹麥Sunny舒肥雞', price:384, emoji:'🍗', categories:['popular', 'brunch'], flow:'brunch', desc:'橙香丹麥、焦糖漿、舒肥雞、半熟太陽雙蛋(微辣)、生菜、藜麥小米、薯條'},
-  {id:2, name:'曙光汁鮮蝦雞肉麵', price:344, emoji:'🍝', categories:['popular', 'main'], flow:'main', desc:'曙光奶油醬、雞肉、蝦子、炙燒蕃茄或炙燒紅椒、季節時蔬、起司絲'},
-  {id:3, name:'香爆椒麻唐揚雞麵', price:344, emoji:'🌶️', categories:['popular', 'main'], flow:'main', desc:'茄汁、雞塊、朝天乾辣椒、九層塔、起司絲'},
-  {id:4, name:'台式熱炒鹹蛋苦瓜麵', price:328, emoji:'🍳', categories:['popular', 'main'], flow:'main', desc:'鹹香白醬、炸杏鮑菇、培根、山苦瓜、洋蔥、紅椒片'},
-  {id:5, name:'起司local香腸奶白麵', price:344, emoji:'🧀', categories:['popular', 'main'], flow:'main', desc:'奶油白醬、帕達諾起司、黃起司、白起司、香腸、紅椒片、九層塔'},
-  {id:6, name:'橙香法式丹麥舒肥牛排', price:480, emoji:'🥩', categories:['brunch'], flow:'brunch', desc:'橙香丹麥、焦糖漿、舒肥牛、半熟太陽蛋(微辣)、綜合生菜、胡麻醬、薯條、炸蒜碎'},
-  {id:7, name:'台胃口水雞班尼蛋', price:320, emoji:'🥚', categories:['brunch'], flow:'brunch', desc:'歐式麵包、口水雞絲、奶油炒菇、水波蛋、起司醬、綜合生菜、巴薩米克醋膏、薯條'},
-  {id:8, name:'燻鮭魚奶油炒菇班尼蛋', price:384, emoji:'🐟', categories:['brunch'], flow:'brunch', desc:'歐式麵包、燻鮭魚、酸豆、奶油炒菇、水波蛋、起司醬、綜合生菜、巴薩米克醋膏、薯條'},
-  {id:9, name:'蕈菇奶起司歐姆蕾', price:304, emoji:'🍄', categories:['brunch'], flow:'brunch', desc:'橙香丹麥、奶油炒菇歐姆蕾、雙色起司、綜合生菜、巴薩米可醋醬、辣海地醃菜'},
-  {id:10, name:'巴薩米克蕈菇麵', price:328, emoji:'🍝', categories:['main'], flow:'main', desc:'特製雙醋、半熟太陽蛋、綜合菇、生菜、藜麥小米'},
-  {id:11, name:'經典青醬鮮蝦麵', price:344, emoji:'🦐', categories:['main'], flow:'main', desc:'(含堅果過敏) 奶油青醬、蝦子、季節時蔬、炸蒜片、起司絲'},
-  {id:12, name:'酒香蒜味蛤蜊墨魚麵', price:344, emoji:'🦑', categories:['main'], flow:'main', desc:'(孕婦不宜)酒、蛤蠣、蒜頭、九層塔、炸蒜片'},
-  {id:13, name:'松露蕈菇奶油麵', price:344, emoji:'🍄', categories:['main'], flow:'main', desc:'松露奶油白醬、綜合菇、巧克力、起司絲'},
-  {id:14, name:'月見苦瓜奶油飯', price:336, emoji:'🍛', categories:['main'], flow:'main', desc:'(孕婦不宜)鹹香白醬、山苦瓜、炸杏鮑菇、洋蔥、紅蔥頭、半熟太陽蛋、起司絲、紅椒片、薑黃飯'},
-  {id:15, name:'西班牙辣炒海陸飯', price:352, emoji:'🥘', categories:['main'], flow:'main', desc:'(孕婦不宜)魷魚、蝦子、蛤蜊、香腸、起司絲、薑黃飯'},
-  {id:16, name:'焗厚切豬排奶油飯', price:368, emoji:'🍛', categories:['main'], flow:'main', desc:'(孕婦不宜)曙光奶油醬、藍帶豬排、培根、季節時蔬、起司絲、薑黃飯'}
+  {id:1, name:'橙香法式丹麥Sunny舒肥雞', price:384, img:'images/01-sunny-chicken.jpg', categories:['popular', 'brunch'], flow:'brunch', desc:'橙香丹麥、焦糖漿、舒肥雞、半熟太陽雙蛋(微辣)、生菜、藜麥小米、薯條'},
+  {id:2, name:'曙光汁鮮蝦雞肉麵', price:344, img:'images/02-shrimp-chicken-pasta.jpg', categories:['popular', 'main'], flow:'main', desc:'曙光奶油醬、雞肉、蝦子、炙燒蕃茄或炙燒紅椒、季節時蔬、起司絲'},
+  {id:3, name:'香爆椒麻唐揚雞麵', price:344, img:'images/03-spicy-fried-chicken-pasta.jpg', categories:['popular', 'main'], flow:'main', desc:'茄汁、雞塊、朝天乾辣椒、九層塔、起司絲'},
+  {id:4, name:'台式熱炒鹹蛋苦瓜麵', price:328, img:'images/04-salted-egg-bitter-gourd-pasta.jpg', categories:['popular', 'main'], flow:'main', desc:'鹹香白醬、炸杏鮑菇、培根、山苦瓜、洋蔥、紅椒片'},
+  {id:5, name:'起司local香腸奶白麵', price:344, img:'images/05-cheese-sausage-pasta.jpg', categories:['popular', 'main'], flow:'main', desc:'奶油白醬、帕達諾起司、黃起司、白起司、香腸、紅椒片、九層塔'},
+  {id:6, name:'橙香法式丹麥舒肥牛排', price:480, img:'images/06-sunny-steak.jpg', categories:['brunch'], flow:'brunch', desc:'橙香丹麥、焦糖漿、舒肥牛、半熟太陽蛋(微辣)、綜合生菜、胡麻醬、薯條、炸蒜碎'},
+  {id:7, name:'台胃口水雞班尼蛋', price:320, img:'images/07-saliva-chicken-benedict.jpg', categories:['brunch'], flow:'brunch', desc:'歐式麵包、口水雞絲、奶油炒菇、水波蛋、起司醬、綜合生菜、巴薩米克醋膏、薯條'},
+  {id:8, name:'燻鮭魚奶油炒菇班尼蛋', price:384, img:'images/08-salmon-mushroom-benedict.jpg', categories:['brunch'], flow:'brunch', desc:'歐式麵包、燻鮭魚、酸豆、奶油炒菇、水波蛋、起司醬、綜合生菜、巴薩米克醋膏、薯條'},
+  {id:9, name:'蕈菇奶起司歐姆蕾', price:304, img:'images/09-mushroom-cheese-omelet.jpg', categories:['brunch'], flow:'brunch', desc:'橙香丹麥、奶油炒菇歐姆蕾、雙色起司、綜合生菜、巴薩米可醋醬、辣海地醃菜'},
+  {id:10, name:'巴薩米克蕈菇麵', price:328, img:'images/10-balsamic-mushroom-pasta.jpg', categories:['main'], flow:'main', desc:'特製雙醋、半熟太陽蛋、綜合菇、生菜、藜麥小米'},
+  {id:11, name:'經典青醬鮮蝦麵', price:344, img:'images/11-pesto-shrimp-pasta.jpg', categories:['main'], flow:'main', desc:'(含堅果過敏) 奶油青醬、蝦子、季節時蔬、炸蒜片、起司絲'},
+  {id:12, name:'酒香蒜味蛤蜊墨魚麵', price:344, img:'images/12-garlic-clam-squid-ink-pasta.jpg', categories:['main'], flow:'main', desc:'(孕婦不宜)酒、蛤蠣、蒜頭、九層塔、炸蒜片'},
+  {id:13, name:'松露蕈菇奶油麵', price:344, img:'images/13-truffle-mushroom-pasta.jpg', categories:['main'], flow:'main', desc:'松露奶油白醬、綜合菇、巧克力、起司絲'},
+  {id:14, name:'月見苦瓜奶油飯', price:336, img:'images/14-moon-bitter-gourd-rice.jpg', categories:['main'], flow:'main', desc:'(孕婦不宜)鹹香白醬、山苦瓜、炸杏鮑菇、洋蔥、紅蔥頭、半熟太陽蛋、起司絲、紅椒片、薑黃飯'},
+  {id:15, name:'西班牙辣炒海陸飯', price:352, img:'images/15-spicy-seafood-rice.jpg', categories:['main'], flow:'main', desc:'(孕婦不宜)魷魚、蝦子、蛤蜊、香腸、起司絲、薑黃飯'},
+  {id:16, name:'焗厚切豬排奶油飯', price:368, img:'images/16-baked-pork-chop-rice.jpg', categories:['main'], flow:'main', desc:'(孕婦不宜)曙光奶油醬、藍帶豬排、培根、季節時蔬、起司絲、薑黃飯'}
 ];
 
 const removeOpts=[
@@ -363,8 +369,11 @@ function renderMenu(){
     return items.map(item=>{
       const inCart=cart.some(c=>c.itemId===item.id);
       const isCurrent=currentItem&&currentItem.id===item.id;
+      // 在這裡載入了你的圖片！
       return `<div class="menu-card ${isCurrent?'selected':''}" data-id="${item.id}" onclick="selectItem(${item.id})">
-        <div class="menu-card-emoji">${item.emoji}</div>
+        <div class="menu-card-emoji">
+          <img src="${item.img}" alt="${item.name}" onerror="this.src='https://placehold.co/400x300/EAF5EE/2D7D46?text=Image+Missing'" style="width:100%; height:100%; object-fit:cover;">
+        </div>
         <div class="menu-card-body">
           <div class="menu-card-name">${item.name}</div>
           <div class="menu-card-desc" title="${item.desc}">${item.desc}</div>
@@ -469,7 +478,9 @@ function toggleExtra(id){
 function renderStep2(){
   let html = `
     <div class="customize-selected-card">
-      <div class="customize-emoji">${currentItem.emoji}</div>
+      <div class="customize-emoji">
+        <img src="${currentItem.img}" alt="${currentItem.name}" onerror="this.src='https://placehold.co/100x100/EAF5EE/2D7D46?text=Image+Missing'" style="width:100%; height:100%; object-fit:cover;">
+      </div>
       <div>
         <div class="customize-item-name">${currentItem.name}</div>
         <div class="customize-item-price">NT$ ${currentItem.price}</div>
@@ -477,7 +488,6 @@ function renderStep2(){
     </div>
   `;
   
-  // === 必選項目置頂 ===
   if(currentItem.flow === 'brunch') {
     html += `<div id="title-req-d1" class="section-title">搭配兩杯 - 先選第一杯 <span class="req-badge">必選 1 項</span></div>`;
     html += `<div class="options-list">` + drink1Opts.map(o=>`
@@ -506,8 +516,6 @@ function renderStep2(){
         <div class="option-check">${selectedSoup===o.id?'<i class="ti ti-check" aria-hidden="true"></i>':''}</div>
       </div>`).join('') + `</div><div style="height:20px"></div>`;
   }
-
-  // === 以下為可選項目 ===
 
   if (currentItem.flow === 'main') {
     html += `<div class="section-title">主餐加量 <span class="opt-badge" style="background:var(--color-background-secondary);color:var(--color-text-secondary);border:1px solid var(--color-border-tertiary)">可選 1 項</span></div>`;
@@ -565,11 +573,12 @@ function renderStep2(){
   document.getElementById('customize-body').innerHTML = html;
 }
 
-// 捲動並提示漏選的區塊
 function scrollToError(id) {
     const el = document.getElementById(id);
     if (el) {
-        el.scrollIntoView({behavior: 'smooth', block: 'center'});
+        // 特別扣除頂部固定列的高度 (大約 150px)
+        const y = el.getBoundingClientRect().top + window.scrollY - 150;
+        window.scrollTo({top: y, behavior: 'smooth'});
         const badge = el.querySelector('.req-badge');
         if(badge) {
             badge.style.transition = 'transform 0.2s';
@@ -582,7 +591,6 @@ function scrollToError(id) {
 }
 
 function saveAndNext(){
-  // 防呆檢查：如果有漏選的必選項目，自動往上捲動並跳出
   if (document.getElementById('step-2').classList.contains('active')) {
     if (currentItem.flow === 'brunch') {
       if (!selectedDrink1) { scrollToError('title-req-d1'); return; }
@@ -675,7 +683,9 @@ function renderStep3(){
     
     html+=`<div class="confirm-card">
       <div class="confirm-item-row">
-        <div class="confirm-item-emoji">${entry.item.emoji}</div>
+        <div class="confirm-item-emoji">
+          <img src="${entry.item.img}" alt="${entry.item.name}" onerror="this.src='https://placehold.co/100x100/EAF5EE/2D7D46?text=Image+Missing'" style="width:100%; height:100%; object-fit:cover;">
+        </div>
         <div class="confirm-item-info">
           <div class="confirm-item-name">第${idx+1}道：${entry.item.name}</div>
           <div class="confirm-item-tags">
