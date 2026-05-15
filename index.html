@@ -36,7 +36,8 @@ body{font-family:var(--font-sans);background:#fafafa;-webkit-font-smoothing:anti
 .step-line{width:32px;height:2px;background:var(--color-border-tertiary);margin:0 2px;margin-bottom:18px;transition:background .3s}
 .step-line.done{background:#2D7D46}
 
-.bell-wrap{position:relative;flex-shrink:0}
+/* 增加左側 margin 讓它遠離步驟列 */
+.bell-wrap{position:relative;flex-shrink:0;margin-left:20px;}
 .bell-btn{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;padding:8px 14px;border-radius:var(--border-radius-md);border:2.5px solid #A32D2D;background:#FCEBEB;cursor:pointer;transition:all .2s;position:relative}
 .bell-btn:hover{background:#F7C1C1}
 .bell-btn:active{transform:scale(0.94)}
@@ -64,7 +65,6 @@ body{font-family:var(--font-sans);background:#fafafa;-webkit-font-smoothing:anti
 .menu-card:hover{border-color:#E8590C;transform:translateY(-2px)}
 .menu-card.selected{border-color:#E8590C;border-width:3px;}
 
-/* 圖片容器 CSS 更新：移除 Emoji 屬性，改為固定高度裁切 */
 .menu-card-emoji{height:160px;width:100%;display:flex;align-items:center;justify-content:center;background:var(--color-background-secondary);border-bottom:1px solid var(--color-border-tertiary);overflow:hidden;padding:0;}
 .menu-card.selected .menu-card-emoji{background:#FFF3ED;}
 
@@ -76,19 +76,20 @@ body{font-family:var(--font-sans);background:#fafafa;-webkit-font-smoothing:anti
 .menu-card.selected .menu-card-check{display:flex}
 .cart-badge-sm{font-size:12px;color:#2D7D46;background:#EAF5EE;padding:2px 6px;border-radius:4px;}
 
-.btn-row{display:flex;gap:12px;padding:16px 24px;position:sticky;bottom:0;background:var(--color-background-primary);border-top:1px solid var(--color-border-tertiary);box-shadow:0 -4px 12px rgba(0,0,0,0.05);z-index:100;margin-top:auto;}
-.big-btn{flex:1;padding:22px 12px;border-radius:var(--border-radius-lg);border:none;color:white;font-size:20px;font-weight:500;cursor:pointer;transition:all .2s;display:flex;align-items:center;justify-content:center;gap:8px;min-height:70px}
+/* 底部釘選按鈕列 - padding 縮小、取消 top border 使白色分隔區變小 */
+.btn-row{display:flex;gap:12px;padding:10px 20px 14px;position:sticky;bottom:0;background:var(--color-background-primary);box-shadow:0 -4px 12px rgba(0,0,0,0.05);z-index:100;margin-top:auto;}
+/* 按鈕高度降低、內邊距減小 */
+.big-btn{flex:1;padding:14px 12px;border-radius:var(--border-radius-lg);border:none;color:white;font-size:20px;font-weight:500;cursor:pointer;transition:all .2s;display:flex;align-items:center;justify-content:center;gap:8px;min-height:54px}
 .big-btn:disabled{background:var(--color-background-secondary);color:var(--color-text-secondary);cursor:not-allowed}
 .big-btn.orange{background:#E8590C}.big-btn.orange:not(:disabled):hover{background:#c44d09}
 .big-btn.green{background:#2D7D46}.big-btn.green:hover{background:#1e5c32}
 .big-btn.blue{background:#185FA5}.big-btn.blue:hover{background:#0c3d6e}
-.back-btn{flex:1;padding:22px 12px;border-radius:var(--border-radius-lg);border:3px solid #185FA5;background:#E6F1FB;color:#185FA5;font-size:20px;font-weight:500;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;transition:all .2s;min-height:70px}
+.back-btn{flex:1;padding:14px 12px;border-radius:var(--border-radius-lg);border:3px solid #185FA5;background:#E6F1FB;color:#185FA5;font-size:20px;font-weight:500;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;transition:all .2s;min-height:54px}
 .back-btn:hover{background:#B5D4F4}
 
 .customize-header{padding:20px 24px 16px}
 .customize-selected-card{margin:0 24px 20px;background:#FFF3ED;border:2px solid #F7C59F;border-radius:var(--border-radius-lg);padding:16px;display:flex;align-items:center;gap:14px}
 
-/* 客製化小圖片 CSS 更新 */
 .customize-emoji{width:80px;height:80px;border-radius:8px;overflow:hidden;flex-shrink:0;background:var(--color-background-secondary);}
 .customize-item-name{font-size:20px;font-weight:500;color:var(--color-text-primary)}
 .customize-item-price{font-size:18px;color:#E8590C;font-weight:500;margin-top:4px}
@@ -125,7 +126,6 @@ body{font-family:var(--font-sans);background:#fafafa;-webkit-font-smoothing:anti
 .confirm-card{margin:0 24px 12px;background:var(--color-background-primary);border:2px solid var(--color-border-tertiary);border-radius:var(--border-radius-lg);overflow:hidden}
 .confirm-item-row{display:flex;align-items:center;gap:14px;padding:16px}
 
-/* 確認訂單頁面圖片 CSS 更新 */
 .confirm-item-emoji{width:70px;height:70px;border-radius:8px;overflow:hidden;flex-shrink:0;background:var(--color-background-secondary);padding:0;}
 .confirm-item-info{flex:1}
 .confirm-item-name{font-size:20px;font-weight:500;color:var(--color-text-primary)}
@@ -261,7 +261,6 @@ body{font-family:var(--font-sans);background:#fafafa;-webkit-font-smoothing:anti
 </div>
 
 <script>
-// 這裡的 img 屬性已經全部換成了指定好的照片檔名！
 const menuItems=[
   {id:1, name:'橙香法式丹麥Sunny舒肥雞', price:384, img:'01-sunny-chicken.jpg', categories:['popular', 'brunch'], flow:'brunch', desc:'橙香丹麥、焦糖漿、舒肥雞、半熟太陽雙蛋(微辣)、生菜、藜麥小米、薯條'},
   {id:2, name:'曙光汁鮮蝦雞肉麵', price:344, img:'02-shrimp-chicken-pasta.jpg', categories:['popular', 'main'], flow:'main', desc:'曙光奶油醬、雞肉、蝦子、炙燒蕃茄或炙燒紅椒、季節時蔬、起司絲'},
@@ -369,7 +368,6 @@ function renderMenu(){
     return items.map(item=>{
       const inCart=cart.some(c=>c.itemId===item.id);
       const isCurrent=currentItem&&currentItem.id===item.id;
-      // 在這裡載入了你的圖片！
       return `<div class="menu-card ${isCurrent?'selected':''}" data-id="${item.id}" onclick="selectItem(${item.id})">
         <div class="menu-card-emoji">
           <img src="${item.img}" alt="${item.name}" onerror="this.src='https://placehold.co/400x300/EAF5EE/2D7D46?text=Image+Missing'" style="width:100%; height:100%; object-fit:cover;">
@@ -576,7 +574,6 @@ function renderStep2(){
 function scrollToError(id) {
     const el = document.getElementById(id);
     if (el) {
-        // 特別扣除頂部固定列的高度 (大約 150px)
         const y = el.getBoundingClientRect().top + window.scrollY - 150;
         window.scrollTo({top: y, behavior: 'smooth'});
         const badge = el.querySelector('.req-badge');
