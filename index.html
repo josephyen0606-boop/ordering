@@ -21,10 +21,10 @@
   --font-sans:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
 }
 body{font-family:var(--font-sans);background:#fafafa;-webkit-font-smoothing:antialiased}
-#app{max-width:680px;margin:0 auto;position:relative;background:#fff;min-height:100vh}
-.step{display:none}.step.active{display:block}
+#app{max-width:680px;margin:0 auto;position:relative;background:#fff;min-height:100vh;display:flex;flex-direction:column}
+.step{display:none;flex:1;padding-bottom:20px;}.step.active{display:block}
 
-.top-bar{display:flex;align-items:center;justify-content:space-between;padding:14px 20px 12px;background:var(--color-background-primary);border-bottom:0.5px solid var(--color-border-tertiary)}
+.top-bar{display:flex;align-items:center;justify-content:space-between;padding:14px 20px 12px;background:var(--color-background-primary);border-bottom:0.5px solid var(--color-border-tertiary);position:sticky;top:0;z-index:20;}
 .steps-row{display:flex;align-items:center;gap:0;flex:1;justify-content:center}
 .step-dot{display:flex;flex-direction:column;align-items:center;gap:4px}
 .step-dot-circle{width:38px;height:38px;border-radius:50%;background:var(--color-background-secondary);border:2px solid var(--color-border-tertiary);display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:500;color:var(--color-text-secondary);transition:all .3s}
@@ -37,15 +37,15 @@ body{font-family:var(--font-sans);background:#fafafa;-webkit-font-smoothing:anti
 .step-line.done{background:#2D7D46}
 
 .bell-wrap{position:relative;flex-shrink:0}
-.bell-btn{display:flex;align-items:center;justify-content:center;gap:6px;padding:10px 16px;border-radius:var(--border-radius-md);border:2.5px solid #A32D2D;background:#FCEBEB;cursor:pointer;transition:all .2s;position:relative}
+.bell-btn{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;padding:8px 14px;border-radius:var(--border-radius-md);border:2.5px solid #A32D2D;background:#FCEBEB;cursor:pointer;transition:all .2s;position:relative}
 .bell-btn:hover{background:#F7C1C1}
 .bell-btn:active{transform:scale(0.94)}
-.bell-btn i{font-size:20px;color:#A32D2D}
-.bell-label{font-size:15px;font-weight:500;color:#A32D2D;white-space:nowrap}
+.bell-btn i{font-size:22px;color:#A32D2D}
+.bell-label{font-size:13px;font-weight:500;color:#A32D2D;white-space:nowrap}
 .bell-ripple{position:absolute;inset:0;border-radius:var(--border-radius-md);border:2px solid #A32D2D;opacity:0}
 .bell-btn.ring .bell-ripple{animation:ripple .6s ease-out}
 @keyframes ripple{0%{transform:scale(1);opacity:.7}100%{transform:scale(2);opacity:0}}
-.bell-tooltip{position:absolute;right:0;top:52px;background:var(--color-background-primary);border:1.5px solid #F7C1C1;border-radius:var(--border-radius-md);padding:10px 16px;font-size:15px;color:#A32D2D;white-space:nowrap;display:none;z-index:10;box-shadow:0 2px 8px rgba(0,0,0,.08)}
+.bell-tooltip{position:absolute;right:0;top:65px;background:var(--color-background-primary);border:1.5px solid #F7C1C1;border-radius:var(--border-radius-md);padding:10px 16px;font-size:15px;color:#A32D2D;white-space:nowrap;display:none;z-index:10;box-shadow:0 2px 8px rgba(0,0,0,.08)}
 .bell-tooltip.show{display:block}
 
 .menu-header{padding:20px 24px 12px}
@@ -53,13 +53,14 @@ body{font-family:var(--font-sans);background:#fafafa;-webkit-font-smoothing:anti
 .menu-sub{font-size:16px;color:var(--color-text-secondary);margin-top:4px}
 .order-count-badge{display:inline-flex;align-items:center;gap:6px;background:#EAF5EE;color:#3B6D11;border-radius:100px;padding:4px 14px;font-size:15px;font-weight:500;margin-left:10px}
 
-.category-tabs{display:flex;gap:10px;padding:10px 24px 16px;overflow-x:auto;scrollbar-width:none;position:sticky;top:0;z-index:10;background:var(--color-background-primary);margin-top:-4px}
+/* 分類標籤在有頂部導覽列的狀態下也要保持吸頂 */
+.category-tabs{display:flex;gap:10px;padding:10px 24px 16px;overflow-x:auto;scrollbar-width:none;position:sticky;top:80px;z-index:10;background:var(--color-background-primary);margin-top:-4px;border-bottom:1px solid var(--color-background-secondary)}
 .category-tabs::-webkit-scrollbar{display:none}
 .cat-btn{padding:10px 20px;border-radius:100px;border:2px solid var(--color-border-tertiary);background:var(--color-background-primary);font-size:16px;font-weight:500;cursor:pointer;white-space:nowrap;color:var(--color-text-primary);transition:all .2s}
 .cat-btn.active{background:#E8590C;border-color:#E8590C;color:white}
 
 .menu-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:16px;padding:0 24px 16px}
-.section-header{grid-column:1 / -1;font-size:22px;font-weight:bold;color:var(--color-text-primary);margin-top:12px;margin-bottom:-4px;padding-bottom:8px;border-bottom:2px solid var(--color-border-tertiary);scroll-margin-top:70px}
+.section-header{grid-column:1 / -1;font-size:22px;font-weight:bold;color:var(--color-text-primary);margin-top:12px;margin-bottom:-4px;padding-bottom:8px;border-bottom:2px solid var(--color-border-tertiary);scroll-margin-top:140px}
 .menu-card{background:var(--color-background-primary);border:2px solid var(--color-border-tertiary);border-radius:var(--border-radius-lg);overflow:hidden;cursor:pointer;transition:all .2s;position:relative;display:flex;flex-direction:column;padding:0}
 .menu-card:hover{border-color:#E8590C;transform:translateY(-2px)}
 .menu-card.selected{border-color:#E8590C;border-width:3px;}
@@ -73,13 +74,14 @@ body{font-family:var(--font-sans);background:#fafafa;-webkit-font-smoothing:anti
 .menu-card.selected .menu-card-check{display:flex}
 .cart-badge-sm{font-size:12px;color:#2D7D46;background:#EAF5EE;padding:2px 6px;border-radius:4px;}
 
-.btn-row{display:flex;gap:12px;padding:12px 24px 20px}
-.big-btn{flex:1;padding:28px 12px;border-radius:var(--border-radius-lg);border:none;color:white;font-size:20px;font-weight:500;cursor:pointer;transition:all .2s;display:flex;align-items:center;justify-content:center;gap:8px;min-height:80px}
+/* 底部釘選按鈕列 */
+.btn-row{display:flex;gap:12px;padding:16px 24px;position:sticky;bottom:0;background:var(--color-background-primary);border-top:1px solid var(--color-border-tertiary);box-shadow:0 -4px 12px rgba(0,0,0,0.05);z-index:100;margin-top:auto;}
+.big-btn{flex:1;padding:22px 12px;border-radius:var(--border-radius-lg);border:none;color:white;font-size:20px;font-weight:500;cursor:pointer;transition:all .2s;display:flex;align-items:center;justify-content:center;gap:8px;min-height:70px}
 .big-btn:disabled{background:var(--color-background-secondary);color:var(--color-text-secondary);cursor:not-allowed}
 .big-btn.orange{background:#E8590C}.big-btn.orange:not(:disabled):hover{background:#c44d09}
 .big-btn.green{background:#2D7D46}.big-btn.green:hover{background:#1e5c32}
 .big-btn.blue{background:#185FA5}.big-btn.blue:hover{background:#0c3d6e}
-.back-btn{flex:1;padding:28px 12px;border-radius:var(--border-radius-lg);border:3px solid #185FA5;background:#E6F1FB;color:#185FA5;font-size:20px;font-weight:500;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;transition:all .2s;min-height:80px}
+.back-btn{flex:1;padding:22px 12px;border-radius:var(--border-radius-lg);border:3px solid #185FA5;background:#E6F1FB;color:#185FA5;font-size:20px;font-weight:500;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;transition:all .2s;min-height:70px}
 .back-btn:hover{background:#B5D4F4}
 
 .customize-header{padding:20px 24px 16px}
@@ -88,8 +90,8 @@ body{font-family:var(--font-sans);background:#fafafa;-webkit-font-smoothing:anti
 .customize-item-name{font-size:20px;font-weight:500;color:var(--color-text-primary)}
 .customize-item-price{font-size:18px;color:#E8590C;font-weight:500;margin-top:4px}
 
-.section-title{font-size:20px;font-weight:500;color:var(--color-text-primary);padding:0 24px;margin-bottom:12px;margin-top:4px;display:flex;align-items:center}
-.req-badge{background:#FCEBEB;color:#A32D2D;padding:4px 10px;border-radius:100px;font-size:15px;margin-left:12px;font-weight:bold;}
+.section-title{font-size:20px;font-weight:500;color:var(--color-text-primary);padding:0 24px;margin-bottom:12px;margin-top:4px;display:flex;align-items:center;scroll-margin-top:100px;}
+.req-badge{background:#FCEBEB;color:#A32D2D;padding:4px 10px;border-radius:100px;font-size:15px;margin-left:12px;font-weight:bold;display:inline-block;}
 .opt-badge{background:#EAF5EE;color:#2D7D46;padding:4px 10px;border-radius:100px;font-size:15px;margin-left:12px;font-weight:bold;}
 .options-list{padding:0 24px;display:flex;flex-direction:column;gap:10px}
 
@@ -191,6 +193,7 @@ body{font-family:var(--font-sans);background:#fafafa;-webkit-font-smoothing:anti
     <button class="cat-btn" onclick="scrollToSection('main',this)">主餐/飯麵</button>
   </div>
   <div class="menu-grid" id="menu-grid"></div>
+  
   <div class="btn-row">
     <button class="big-btn orange" id="next1-btn" disabled onclick="goStep(2)">
       <i class="ti ti-arrow-right" aria-hidden="true"></i> 下一步
@@ -205,14 +208,13 @@ body{font-family:var(--font-sans);background:#fafafa;-webkit-font-smoothing:anti
   </div>
   
   <div id="customize-body">
-    <!-- 客製化內容會由 JavaScript 自動產生 -->
-  </div>
+    </div>
   
   <div class="btn-row">
     <button class="back-btn" onclick="backFromCustomize()">
       <i class="ti ti-arrow-left" aria-hidden="true"></i> 返回
     </button>
-    <button class="big-btn orange" id="next2-btn" disabled onclick="saveAndNext()">
+    <button class="big-btn orange" id="next2-btn" onclick="saveAndNext()">
       <i class="ti ti-check" aria-hidden="true"></i> 下一步
     </button>
   </div>
@@ -440,16 +442,6 @@ function backFromCustomize(){
   }
 }
 
-function checkStep2Valid() {
-  const btn = document.getElementById('next2-btn');
-  if (!currentItem) return;
-  if (currentItem.flow === 'brunch') {
-    btn.disabled = !(selectedDrink1 && selectedDrink2);
-  } else if (currentItem.flow === 'main') {
-    btn.disabled = !(selectedSoup);
-  }
-}
-
 function toggleRemove(id){
   if(currentRemove.includes(id)) currentRemove=currentRemove.filter(x=>x!==id);
   else currentRemove.push(id);
@@ -485,7 +477,50 @@ function renderStep2(){
     </div>
   `;
   
-  // 1. 不加配料
+  // === 必選項目置頂 ===
+  if(currentItem.flow === 'brunch') {
+    html += `<div id="title-req-d1" class="section-title">搭配兩杯 - 先選第一杯 <span class="req-badge">必選 1 項</span></div>`;
+    html += `<div class="options-list">` + drink1Opts.map(o=>`
+      <div class="option-row ${selectedDrink1===o.id?'selected':''}" onclick="selectD1('${o.id}')">
+        <div class="option-row-left">
+          <div><div class="option-name">${o.label}</div>${o.sub ? `<div class="option-sub">${o.sub}</div>` : ''}</div>
+        </div>
+        <div class="option-check">${selectedDrink1===o.id?'<i class="ti ti-check" aria-hidden="true"></i>':''}</div>
+      </div>`).join('') + `</div><div style="height:20px"></div>`;
+    
+    html += `<div id="title-req-d2" class="section-title">搭配兩杯 - 再選第貳杯 <span class="req-badge">必選 1 項</span></div>`;
+    html += `<div class="options-list">` + drink2Opts.map(o=>`
+      <div class="option-row ${selectedDrink2===o.id?'selected':''}" onclick="selectD2('${o.id}')">
+        <div class="option-row-left"><div class="option-name">${o.label}</div></div>
+        <div style="display:flex;align-items:center;">
+          ${o.price > 0 ? `<span class="addon-plus">+NT$ ${o.price}</span>` : ''}
+          <div class="option-check">${selectedDrink2===o.id?'<i class="ti ti-check" aria-hidden="true"></i>':''}</div>
+        </div>
+      </div>`).join('') + `</div><div style="height:20px"></div>`;
+
+  } else if (currentItem.flow === 'main') {
+    html += `<div id="title-req-soup" class="section-title">主餐飯麵附餐湯品 <span class="req-badge">必選 1 項</span></div>`;
+    html += `<div class="options-list">` + soupOpts.map(o=>`
+      <div class="option-row ${selectedSoup===o.id?'selected':''}" onclick="selectSoup('${o.id}')">
+        <div class="option-row-left"><div class="option-name">${o.label}</div></div>
+        <div class="option-check">${selectedSoup===o.id?'<i class="ti ti-check" aria-hidden="true"></i>':''}</div>
+      </div>`).join('') + `</div><div style="height:20px"></div>`;
+  }
+
+  // === 以下為可選項目 ===
+
+  if (currentItem.flow === 'main') {
+    html += `<div class="section-title">主餐加量 <span class="opt-badge" style="background:var(--color-background-secondary);color:var(--color-text-secondary);border:1px solid var(--color-border-tertiary)">可選 1 項</span></div>`;
+    html += `<div class="options-list">` + upgradeOpts.map(o=>`
+      <div class="option-row ${selectedUpgrade===o.id?'selected':''}" onclick="toggleUpgrade('${o.id}')">
+        <div class="option-row-left"><div class="option-name">${o.label}</div></div>
+        <div style="display:flex;align-items:center;">
+          <span class="addon-plus">+NT$ ${o.price}</span>
+          <div class="option-check">${selectedUpgrade===o.id?'<i class="ti ti-check" style="color:white" aria-hidden="true"></i>':''}</div>
+        </div>
+      </div>`).join('') + `</div><div style="height:20px"></div>`;
+  }
+
   html += `<div class="section-title">🚫 不加配料 <span class="opt-badge" style="background:var(--color-background-secondary);color:var(--color-text-secondary);border:1px solid var(--color-border-tertiary)">可多選</span></div>`;
   html += `<div class="options-list">` + removeOpts.map(o=>`
     <div class="option-row ${currentRemove.includes(o.id)?'selected':''}" onclick="toggleRemove('${o.id}')">
@@ -499,7 +534,6 @@ function renderStep2(){
       <div class="option-check">${currentRemove.includes(o.id)?'<i class="ti ti-check" aria-hidden="true"></i>':''}</div>
     </div>`).join('') + `</div><div style="height:20px"></div>`;
 
-  // 2. 直覺點擊選辣度
   html += `<div class="section-title">🌶️ 辣度選擇 <span class="req-badge" style="background:var(--color-background-secondary);color:var(--color-text-secondary);border:1px solid var(--color-border-tertiary)">單選</span></div>`;
   const spicyLabels = ['不加辣', '小辣', '中辣', '大辣'];
   const spicyEmojis = ['😊', '🌶️', '🌶️🌶️', '🌶️🌶️🌶️'];
@@ -513,49 +547,6 @@ function renderStep2(){
   }
   html += `</div></div><div style="height:20px"></div>`;
 
-  // 3. 依據類別(flow)顯示不同附餐
-  if(currentItem.flow === 'brunch') {
-    // 早午餐流程：飲料一、飲料二
-    html += `<div class="section-title">搭配兩杯 - 先選第一杯 <span class="req-badge">必選 1 項</span></div>`;
-    html += `<div class="options-list">` + drink1Opts.map(o=>`
-      <div class="option-row ${selectedDrink1===o.id?'selected':''}" onclick="selectD1('${o.id}')">
-        <div class="option-row-left">
-          <div><div class="option-name">${o.label}</div>${o.sub ? `<div class="option-sub">${o.sub}</div>` : ''}</div>
-        </div>
-        <div class="option-check">${selectedDrink1===o.id?'<i class="ti ti-check" aria-hidden="true"></i>':''}</div>
-      </div>`).join('') + `</div><div style="height:20px"></div>`;
-    
-    html += `<div class="section-title">搭配兩杯 - 再選第貳杯 <span class="req-badge">必選 1 項</span></div>`;
-    html += `<div class="options-list">` + drink2Opts.map(o=>`
-      <div class="option-row ${selectedDrink2===o.id?'selected':''}" onclick="selectD2('${o.id}')">
-        <div class="option-row-left"><div class="option-name">${o.label}</div></div>
-        <div style="display:flex;align-items:center;">
-          ${o.price > 0 ? `<span class="addon-plus">+NT$ ${o.price}</span>` : ''}
-          <div class="option-check">${selectedDrink2===o.id?'<i class="ti ti-check" aria-hidden="true"></i>':''}</div>
-        </div>
-      </div>`).join('') + `</div><div style="height:20px"></div>`;
-
-  } else if (currentItem.flow === 'main') {
-    // 飯麵流程：選湯、加飯
-    html += `<div class="section-title">主餐飯麵附餐湯品 <span class="req-badge">必選 1 項</span></div>`;
-    html += `<div class="options-list">` + soupOpts.map(o=>`
-      <div class="option-row ${selectedSoup===o.id?'selected':''}" onclick="selectSoup('${o.id}')">
-        <div class="option-row-left"><div class="option-name">${o.label}</div></div>
-        <div class="option-check">${selectedSoup===o.id?'<i class="ti ti-check" aria-hidden="true"></i>':''}</div>
-      </div>`).join('') + `</div><div style="height:20px"></div>`;
-
-    html += `<div class="section-title">(主餐飯麵)加飯 <span class="opt-badge" style="background:var(--color-background-secondary);color:var(--color-text-secondary);border:1px solid var(--color-border-tertiary)">可選 1 項</span></div>`;
-    html += `<div class="options-list">` + upgradeOpts.map(o=>`
-      <div class="option-row ${selectedUpgrade===o.id?'selected':''}" onclick="toggleUpgrade('${o.id}')">
-        <div class="option-row-left"><div class="option-name">${o.label}</div></div>
-        <div style="display:flex;align-items:center;">
-          <span class="addon-plus">+NT$ ${o.price}</span>
-          <div class="option-check">${selectedUpgrade===o.id?'<i class="ti ti-check" style="color:white" aria-hidden="true"></i>':''}</div>
-        </div>
-      </div>`).join('') + `</div><div style="height:20px"></div>`;
-  }
-
-  // 4. 自選優惠加點
   html += `<div class="section-title">自選優惠加點 <span class="opt-badge">可多選</span></div>`;
   html += `<div class="options-list" style="margin-bottom:16px;">` + extraOpts.map(o=>`
     <div class="option-row addon-row ${selectedExtras.includes(o.id)?'selected':''}" onclick="toggleExtra('${o.id}')">
@@ -572,10 +563,35 @@ function renderStep2(){
     </div>`).join('') + `</div>`;
 
   document.getElementById('customize-body').innerHTML = html;
-  checkStep2Valid();
+}
+
+// 捲動並提示漏選的區塊
+function scrollToError(id) {
+    const el = document.getElementById(id);
+    if (el) {
+        el.scrollIntoView({behavior: 'smooth', block: 'center'});
+        const badge = el.querySelector('.req-badge');
+        if(badge) {
+            badge.style.transition = 'transform 0.2s';
+            badge.style.transform = 'scale(1.3)';
+            setTimeout(() => badge.style.transform = 'scale(1)', 200);
+            setTimeout(() => badge.style.transform = 'scale(1.3)', 400);
+            setTimeout(() => badge.style.transform = 'scale(1)', 600);
+        }
+    }
 }
 
 function saveAndNext(){
+  // 防呆檢查：如果有漏選的必選項目，自動往上捲動並跳出
+  if (document.getElementById('step-2').classList.contains('active')) {
+    if (currentItem.flow === 'brunch') {
+      if (!selectedDrink1) { scrollToError('title-req-d1'); return; }
+      if (!selectedDrink2) { scrollToError('title-req-d2'); return; }
+    } else if (currentItem.flow === 'main') {
+      if (!selectedSoup) { scrollToError('title-req-soup'); return; }
+    }
+  }
+
   const cartData = {
     itemId: currentItem.id, 
     item: currentItem, 
@@ -653,7 +669,7 @@ function renderStep3(){
     
     const sObj = soupOpts.find(o=>o.id===entry.soup);
     const soupTag = sObj ? `<span class="tag tag-green">湯品：${sObj.label}</span>` : '';
-    const uTag = uObj ? `<span class="tag tag-green">加飯：${uObj.label} (+NT$${uObj.price})</span>` : '';
+    const uTag = uObj ? `<span class="tag tag-green">加量：${uObj.label} (+NT$${uObj.price})</span>` : '';
 
     const exTags = extraOpts.filter(o=>entry.extras.includes(o.id)).map(o=>`<span class="tag tag-green">加點：${o.label} (+NT$${o.price})</span>`).join('');
     
